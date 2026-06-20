@@ -7,9 +7,9 @@ const variantClasses = {
 }
 
 export default function Button({ variant = 'primary', children, className = '', disabled, ...props }) {
-  const base = 'py-4 px-8 rounded-xl text-lg font-semibold transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2'
+  const base = 'py-4 px-8 rounded-xl text-lg font-semibold transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2'
   const variantClass = variantClasses[variant] || variantClasses.primary
-  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-[0.97]'
 
   return (
     <button

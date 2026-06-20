@@ -46,23 +46,27 @@ export default function StaffDashboard({ onLogout, onNavigate }) {
 
       {/* Nav tiles */}
       <main className="flex-1 flex flex-col items-center justify-center px-8 gap-6">
-        <p className="text-gray-500 text-xl mb-4">What would you like to do?</p>
-        <div className="grid grid-cols-1 gap-6 w-full max-w-md">
+        <p className="text-gray-400 text-base uppercase tracking-widest font-medium mb-2">Staff Dashboard</p>
+        <div className="grid grid-cols-1 gap-4 w-full max-w-md">
           <button
             onClick={() => onNavigate('orders')}
-            className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-2xl shadow-lg p-8 flex flex-col items-center gap-3 transition-colors duration-150"
+            className="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 active:scale-[0.98] text-white rounded-2xl shadow-lg shadow-blue-200 p-8 flex items-center gap-6 transition-all duration-150 text-left"
           >
-            <span className="text-5xl">📋</span>
-            <span className="text-2xl font-bold">Order Queue</span>
-            <span className="text-blue-200 text-base">View and manage stringing orders</span>
+            <span className="text-4xl shrink-0">📋</span>
+            <div>
+              <p className="text-2xl font-bold">Order Queue</p>
+              <p className="text-blue-200 text-sm mt-0.5">View and manage stringing orders</p>
+            </div>
           </button>
           <button
             onClick={() => onNavigate('inventory')}
-            className="bg-green-600 hover:bg-green-700 active:bg-green-800 text-white rounded-2xl shadow-lg p-8 flex flex-col items-center gap-3 transition-colors duration-150"
+            className="bg-white hover:bg-gray-50 active:bg-gray-100 active:scale-[0.98] text-gray-900 rounded-2xl border border-gray-200 shadow-sm p-8 flex items-center gap-6 transition-all duration-150 text-left"
           >
-            <span className="text-5xl">🏸</span>
-            <span className="text-2xl font-bold">Inventory</span>
-            <span className="text-green-200 text-base">Manage brands, models &amp; strings</span>
+            <span className="text-4xl shrink-0">🏸</span>
+            <div>
+              <p className="text-2xl font-bold">Inventory</p>
+              <p className="text-gray-400 text-sm mt-0.5">Manage brands, models &amp; strings</p>
+            </div>
           </button>
         </div>
       </main>

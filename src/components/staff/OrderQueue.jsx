@@ -21,6 +21,7 @@ export default function OrderQueue({ onBack }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [updatingId, setUpdatingId] = useState(null)
+  const [togglingPaidId, setTogglingPaidId] = useState(null)
 
   const fetchOrders = useCallback(async () => {
     if (!isConfigured()) return
@@ -49,8 +50,26 @@ export default function OrderQueue({ onBack }) {
       .eq('id', order.id)
     if (!error) {
       setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: nextStatus } : o))
+      if (nextStatus === 'done' && order.customer_email) {
+        supabase.functions.invoke('send-order-notification', {
+          body: { order, type: 'order_done' },
+        })
+      }
     }
     setUpdatingId(null)
+  }
+
+  async function togglePaid(order) {
+    const nextPaid = !order.paid
+    setTogglingPaidId(order.id)
+    const { error } = await supabase
+      .from('stringing_orders')
+      .update({ paid: nextPaid })
+      .eq('id', order.id)
+    if (!error) {
+      setOrders(prev => prev.map(o => o.id === order.id ? { ...o, paid: nextPaid } : o))
+    }
+    setTogglingPaidId(null)
   }
 
   if (!isConfigured()) {
@@ -95,51 +114,76 @@ export default function OrderQueue({ onBack }) {
           {orders.map(order => {
             const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending
             const isUpdating = updatingId === order.id
+            const isTogglingPaid = togglingPaidId === order.id
             return (
-              <div key={order.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <span className="text-xs font-mono text-gray-400 uppercase tracking-wider">
-                      #{order.id.slice(-6).toUpperCase()}
-                    </span>
-                    <h3 className="text-xl font-bold text-gray-900">{order.customer_name}</h3>
+              <div key={order.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 transition-shadow hover:shadow-md">
+                {/* Top row: customer + badges */}
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-xs font-mono text-gray-400 uppercase tracking-wider">
+                        #{order.id.slice(-6).toUpperCase()}
+                      </span>
+                      {order.customer_email && (
+                        <span className="text-xs text-blue-400" title={`Email: ${order.customer_email}`}>✉</span>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 truncate">{order.customer_name}</h3>
                     {order.customer_phone && (
-                      <p className="text-gray-500 text-sm">{order.customer_phone}</p>
+                      <p className="text-gray-400 text-sm">{order.customer_phone}</p>
                     )}
                   </div>
-                  <button
-                    onClick={() => cycleStatus(order)}
-                    disabled={isUpdating}
-                    className={`
-                      shrink-0 px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-150
-                      ${cfg.bg} ${cfg.text} ${cfg.border}
-                      ${isUpdating ? 'opacity-50 cursor-wait' : 'hover:opacity-80 cursor-pointer active:scale-95'}
-                    `}
-                  >
-                    {isUpdating ? '...' : cfg.label}
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-base text-gray-700">
-                  <div>
-                    <span className="text-gray-400 text-sm">Racket: </span>
-                    {order.racket_brand_name} {order.racket_model_name}
-                  </div>
-                  <div>
-                    <span className="text-gray-400 text-sm">String: </span>
-                    {order.string_brand_name} {order.string_model_name}
-                  </div>
-                  <div>
-                    <span className="text-gray-400 text-sm">Tension: </span>
-                    {order.tension_lbs} lbs
-                  </div>
-                  <div>
-                    <span className="text-gray-400 text-sm">Date: </span>
-                    {formatDate(order.created_at)}
+                  <div className="flex flex-col items-end gap-2 shrink-0">
+                    <button
+                      onClick={() => cycleStatus(order)}
+                      disabled={isUpdating}
+                      className={`
+                        px-4 py-2 rounded-xl text-sm font-semibold border-2 transition-all duration-150 min-w-[100px] text-center
+                        ${cfg.bg} ${cfg.text} ${cfg.border}
+                        ${isUpdating ? 'opacity-50 cursor-wait' : 'hover:opacity-80 cursor-pointer active:scale-95'}
+                      `}
+                    >
+                      {isUpdating ? '···' : cfg.label}
+                    </button>
+                    <button
+                      onClick={() => togglePaid(order)}
+                      disabled={isTogglingPaid}
+                      className={`
+                        px-3 py-1.5 rounded-lg text-xs font-semibold border-2 transition-all duration-150 min-w-[100px] text-center
+                        ${order.paid
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                          : 'bg-gray-50 text-gray-400 border-gray-200'}
+                        ${isTogglingPaid ? 'opacity-50 cursor-wait' : 'hover:opacity-80 cursor-pointer active:scale-95'}
+                      `}
+                    >
+                      {isTogglingPaid ? '···' : order.paid ? '✓ Paid' : 'Unpaid'}
+                    </button>
                   </div>
                 </div>
+
+                {/* Order details */}
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 text-xs uppercase tracking-wide">Racket</span>
+                    <span className="text-gray-800 font-medium">{order.racket_brand_name} {order.racket_model_name}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 text-xs uppercase tracking-wide">String</span>
+                    <span className="text-gray-800 font-medium">{order.string_brand_name} {order.string_model_name}</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 text-xs uppercase tracking-wide">Tension</span>
+                    <span className="text-gray-800 font-medium">{order.tension_lbs} lbs</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 text-xs uppercase tracking-wide">Received</span>
+                    <span className="text-gray-800 font-medium">{formatDate(order.created_at)}</span>
+                  </div>
+                </div>
+
                 {order.notes && (
-                  <p className="mt-2 text-sm text-gray-500 bg-gray-50 rounded-lg px-3 py-2">
-                    Note: {order.notes}
+                  <p className="mt-3 text-sm text-gray-500 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                    📝 {order.notes}
                   </p>
                 )}
               </div>

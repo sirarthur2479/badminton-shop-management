@@ -31,3 +31,7 @@ pnpm-debug.log*
 
 # Vite cache
 .vite/
+
+# Supabase local dev
+supabase/.temp/
+supabase/.branches/

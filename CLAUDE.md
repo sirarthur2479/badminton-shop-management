@@ -229,39 +229,69 @@ npm run build
 
 ## Current Build Status
 
+### Phase 0 — Demo (complete)
 - [x] Full scaffolding committed
 - [x] All components implemented (kiosk form, staff queue, inventory CRUD)
-- [x] Database schema + seed data ready
-- [ ] Supabase project not yet created (needs env vars)
-- [ ] Not yet deployed to GitHub Pages
-- [ ] PWA manifest not yet added
+- [x] Database schema + seed data (Yonex/Victor rackets, BG80/Aerobite strings)
+- [x] Supabase project created and schema run
+- [x] Email notifications via Resend edge function
+- [x] Deployed to GitHub Pages — live and tested end-to-end
+- [x] PWA manifest + iOS meta tags — installs to iPad home screen
+
+---
+
+## Gaps vs Full Product
+
+### Phase 1 — After Pilot Feedback (2–3 shops)
+
+These are the next practical improvements once real shops have used the demo:
+
+| Gap | Detail |
+|---|---|
+| **Mobile button visibility** | Next/Submit button falls below fold on iPhone 14 Pro — must scroll to reach it. Fix: `h-[100dvh]` container + scrollable field area. |
+| **Welcome screen skip** | Extra tap before the form adds friction. Form is now the landing page; branding lives in the form header. |
+| **Returning customer search** | No way to look up a prior order. Landing page should search by name / phone / email and pre-populate racket + string + tension from last visit. Players have 4–5 rackets and rarely change string — enter once, reuse forever. DB needs a `customers` table and `customer_id` on orders. |
+| **Open catalog** | If a racket or string model isn't listed, customers are stuck. Need "Not listed? Add it" in the dropdown. Staff review queue approves before items go live. |
+| **Accessories** | Shops sell more than rackets and strings. Generic `products` table with `category` field covers grips, shuttlecocks, bags, etc. |
+| **SMS notification** | No SMS when order is done — email only. Twilio or a NZ-local provider needed. High value for customers who don't check email. |
+| **Print ticket** | No paper slip on drop-off. `@media print` order card would let staff print a ticket to attach to the racket. |
+| **Queue filtering** | All orders show in one list — `picked_up` orders pile up. Need filter tabs (Pending / In Progress / Done / All). |
+| **Real-time updates** | Queue only refreshes on manual button press. Supabase Realtime subscription would push new orders instantly to staff view. |
+| **NZD formatting** | Prices in inventory show no currency. All price fields should display `NZD $`. |
+| **NZ date format** | Dates display in US format (`Jun 20, 01:23 PM`). Should use NZ format (`20 Jun, 1:23 pm`). |
+| **Staff queue on phone** | Owner checks queue from phone while coaching. Layout works but not optimised — needs testing on a phone screen and likely a card-stack mobile view. |
+
+### Phase 2 — Productise (post-validation)
+
+| Gap | Detail |
+|---|---|
+| **Supabase Auth** | Staff PIN is a single env var — no per-user logins, no audit trail. Replace with Supabase email auth. |
+| **Multi-tenant** | One Supabase project serves all shops. Needs `shop_id` on all tables + Row Level Security policies. |
+| **Onboarding flow** | Shop owner currently needs a developer to configure env vars. Self-serve setup: shop name, logo, PIN, catalog. |
+| **Service worker / offline** | PWA manifest added but no service worker. Form fails if internet drops mid-order. |
+| **Order pagination / archiving** | No limit on order history — queue will become slow after hundreds of orders. Need pagination or auto-archive for `picked_up` orders older than N days. |
+| **Billing** | No monetisation. Stripe subscription (~$29–49 NZD/month per shop) post-validation. |
 
 ---
 
 ## Next Steps
 
-### Phase 0 — Demo Ready (do this now)
+### Immediate (in progress)
 
-1. **Create Supabase project** and run `schema.sql`
-2. **Add `.env`** with real credentials + `VITE_STAFF_PIN=1234`
-3. **Seed the catalog** — add realistic Auckland shop data: popular Yonex/Victor models, BG80/Aerobite strings
-4. **Test locally** with `npm run dev` — walk through full order flow end-to-end
-5. **Deploy to GitHub Pages** — get a shareable URL to open on the demo iPad + phone
+1. **Fix sticky Next/Submit button on mobile** — button falls below fold on iPhone (tested on iPhone 14 Pro). Use `h-[100dvh]` + scrollable field area so button is always visible without scrolling.
+2. **Skip welcome screen** — form is now the landing page. One less tap. Welcome branding moved to compact form header.
+3. **Add queue filter tabs** — Pending / Active / Done / All — highest friction point in the current staff view
+4. **NZD + NZ date format** — small but makes it look production-ready to a NZ shop owner
+5. **Test staff queue on phone** — owner will use this while coaching, not just on desktop
 
-### Phase 1 — After Pilot Feedback (2–3 shops)
+### After pilot feedback
 
-6. **SMS notification** when order marked `done` — owner/customer gets a text (Twilio or NZ-local provider)
-7. **Print ticket** — `@media print` order slip to hand customer on drop-off
-8. **Staff queue mobile view** — ensure `/staff` order queue is fully usable on a phone (owner checking queue while coaching)
-9. **NZD formatting** — add `NZD $` to all price fields
-
-### Phase 2 — Productise
-
-10. **Supabase Auth** — shop owner email login instead of env-var PIN
-11. **Multi-tenant** — `shop_id` on all tables + RLS, one Supabase instance serves all shops
-12. **Onboarding flow** — shop owner self-serves: sets shop name, logo, staff PIN, catalog
-13. **PWA manifest + service worker** — install to iPad home screen, basic offline resilience
-14. **Billing** — Stripe subscription (~$29–49 NZD/month per shop)
+6. **Returning customer search** — search by name / phone / email on landing. Tap a result to pre-populate racket + string + tension from their last order. Support selecting across multiple rackets (a player with 4–5 rackets enters each combo once, then reuses it every visit).
+7. **Open catalog + user-submitted models** — "Not listed? Add it" option at the bottom of each brand/model dropdown. Submissions go into a staff review queue before becoming permanent. Catalog grows itself.
+8. **Accessories / generic product catalog** — expand beyond rackets and strings using a generic `products` table with a `category` field (grip, shuttlecock, bag, etc.). Inventory manager gets a category filter tab.
+9. **SMS notification** — owner/customer text when order is done
+10. **Print ticket** — `@media print` order slip
+11. **Real-time queue** — Supabase Realtime so new orders appear without refresh
 
 ---
 

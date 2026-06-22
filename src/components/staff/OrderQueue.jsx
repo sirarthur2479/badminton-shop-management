@@ -388,13 +388,23 @@ export default function OrderQueue({ onBack }) {
       .eq('id', expandedId)
     if (error) {
       setEditError(error.message)
+      setSavingEdit(false)
     } else {
-      setOrders(prev => prev.map(o =>
-        o.id === expandedId ? { ...o, ...editDraft, tension_lbs: Number(editDraft.tension_lbs) } : o
-      ))
+      const normalized = {
+        customer_name:     editDraft.customer_name.trim(),
+        customer_phone:    editDraft.customer_phone.trim() || null,
+        customer_email:    editDraft.customer_email.trim() || null,
+        racket_brand_name: editDraft.racket_brand_name.trim(),
+        racket_model_name: editDraft.racket_model_name.trim(),
+        string_brand_name: editDraft.string_brand_name.trim(),
+        string_model_name: editDraft.string_model_name.trim(),
+        tension_lbs:       Number(editDraft.tension_lbs),
+        notes:             editDraft.notes.trim() || null,
+      }
+      setOrders(prev => prev.map(o => o.id === expandedId ? { ...o, ...normalized } : o))
+      setSavingEdit(false)
       cancelEdit()
     }
-    setSavingEdit(false)
   }
 
   function rowProps(order) {

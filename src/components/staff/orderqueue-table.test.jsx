@@ -1,6 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 
 // Mock supabase before importing the component
@@ -56,116 +55,108 @@ function mockOrders() {
 
 import OrderQueue from './OrderQueue'
 
+// Helper: render and wait for the desktop table to finish loading
+async function renderAndWait() {
+  render(<OrderQueue onBack={() => {}} />)
+  await waitFor(() => {
+    const table = screen.getByTestId('desktop-table')
+    expect(within(table).getAllByTestId('order-row')).toHaveLength(2)
+  })
+  return screen.getByTestId('desktop-table')
+}
+
+const ID_A = 'aaaaaaaa-0000-0000-0000-000000000001'
+const ID_B = 'bbbbbbbb-0000-0000-0000-000000000002'
+
 describe('OrderQueue compact table', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  // Slice 1: renders as compact table rows (not legacy cards) on desktop
+  // Slice 1: renders as compact table rows on desktop
   it('renders orders as table rows (data-testid="order-row") not legacy cards', async () => {
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
-
-    const rows = screen.getAllByTestId('order-row')
+    const table = await renderAndWait()
+    const rows = within(table).getAllByTestId('order-row')
     expect(rows).toHaveLength(2)
-    // Legacy card class should not be present
     rows.forEach(row => {
       expect(row).not.toHaveClass('rounded-2xl')
     })
   })
 
   it('each row shows order ID, customer name, racket·string·tension, status and paid badges', async () => {
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
+    const table = await renderAndWait()
 
-    // Short ID (last 8 of uuid, uppercased)
-    expect(screen.getByText('#00000001')).toBeInTheDocument()
-    // Customer name
-    expect(screen.getByText('Alice Tan')).toBeInTheDocument()
-    // Job summary (racket · string · tension on one line)
-    expect(screen.getByText(/Yonex Astrox 99/)).toBeInTheDocument()
-    expect(screen.getByText(/BG80/)).toBeInTheDocument()
-    expect(screen.getByText(/28 lbs/)).toBeInTheDocument()
+    expect(within(table).getByText('#00000001')).toBeInTheDocument()
+    expect(within(table).getByText('Alice Tan')).toBeInTheDocument()
+    expect(within(table).getByText(/Yonex Astrox 99/)).toBeInTheDocument()
+    expect(within(table).getByText(/BG80/)).toBeInTheDocument()
+    expect(within(table).getByText(/28 lbs/)).toBeInTheDocument()
   })
 
   // Slice 2: click-to-expand / collapse
   it('clicking a row expands the edit panel below it', async () => {
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
-
-    const rows = screen.getAllByTestId('order-row')
+    const table = await renderAndWait()
+    const rows = within(table).getAllByTestId('order-row')
     fireEvent.click(rows[0])
 
     await waitFor(() => {
-      expect(screen.getByTestId('edit-panel-' + mockOrders()[0].id)).toBeInTheDocument()
+      expect(within(table).getByTestId(`edit-panel-${ID_A}`)).toBeInTheDocument()
     })
   })
 
   it('clicking the same row again collapses the edit panel', async () => {
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
-
-    const rows = screen.getAllByTestId('order-row')
+    const table = await renderAndWait()
+    const rows = within(table).getAllByTestId('order-row')
     fireEvent.click(rows[0])
-    await waitFor(() => expect(screen.getByTestId('edit-panel-' + mockOrders()[0].id)).toBeInTheDocument())
+    await waitFor(() => expect(within(table).getByTestId(`edit-panel-${ID_A}`)).toBeInTheDocument())
 
     fireEvent.click(rows[0])
     await waitFor(() => {
-      expect(screen.queryByTestId('edit-panel-' + mockOrders()[0].id)).not.toBeInTheDocument()
+      expect(within(table).queryByTestId(`edit-panel-${ID_A}`)).not.toBeInTheDocument()
     })
   })
 
   it('expanding row B collapses previously expanded row A', async () => {
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
-
-    const rows = screen.getAllByTestId('order-row')
-    const [idA, idB] = [mockOrders()[0].id, mockOrders()[1].id]
+    const table = await renderAndWait()
+    const rows = within(table).getAllByTestId('order-row')
 
     fireEvent.click(rows[0])
-    await waitFor(() => expect(screen.getByTestId('edit-panel-' + idA)).toBeInTheDocument())
+    await waitFor(() => expect(within(table).getByTestId(`edit-panel-${ID_A}`)).toBeInTheDocument())
 
     fireEvent.click(rows[1])
     await waitFor(() => {
-      expect(screen.getByTestId('edit-panel-' + idB)).toBeInTheDocument()
-      expect(screen.queryByTestId('edit-panel-' + idA)).not.toBeInTheDocument()
+      expect(within(table).getByTestId(`edit-panel-${ID_B}`)).toBeInTheDocument()
+      expect(within(table).queryByTestId(`edit-panel-${ID_A}`)).not.toBeInTheDocument()
     })
   })
 
   // Slice 3: badge click isolation
   it('clicking status badge cycles status without expanding row', async () => {
-    const { supabase } = await import('../../supabaseClient')
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
-
-    const statusBadge = screen.getAllByTestId('status-badge')[0]
+    const table = await renderAndWait()
+    const statusBadge = within(table).getAllByTestId('status-badge')[0]
     fireEvent.click(statusBadge)
 
-    // Edit panel must NOT appear
-    expect(screen.queryByTestId('edit-panel-' + mockOrders()[0].id)).not.toBeInTheDocument()
+    expect(within(table).queryByTestId(`edit-panel-${ID_A}`)).not.toBeInTheDocument()
   })
 
   it('clicking paid badge toggles paid without expanding row', async () => {
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
-
-    const paidBadge = screen.getAllByTestId('paid-badge')[0]
+    const table = await renderAndWait()
+    const paidBadge = within(table).getAllByTestId('paid-badge')[0]
     fireEvent.click(paidBadge)
 
-    expect(screen.queryByTestId('edit-panel-' + mockOrders()[0].id)).not.toBeInTheDocument()
+    expect(within(table).queryByTestId(`edit-panel-${ID_A}`)).not.toBeInTheDocument()
   })
 
   // Slice 4: search filter
   it('search input filters visible rows', async () => {
-    render(<OrderQueue onBack={() => {}} />)
-    await waitFor(() => expect(screen.getByText('Alice Tan')).toBeInTheDocument())
+    const table = await renderAndWait()
 
     const searchInput = screen.getByPlaceholderText(/search/i)
     fireEvent.change(searchInput, { target: { value: 'Bob' } })
 
     await waitFor(() => {
-      expect(screen.queryByText('Alice Tan')).not.toBeInTheDocument()
-      expect(screen.getByText('Bob Lee')).toBeInTheDocument()
+      expect(within(table).queryByText('Alice Tan')).not.toBeInTheDocument()
+      expect(within(table).getByText('Bob Lee')).toBeInTheDocument()
     })
   })
 })

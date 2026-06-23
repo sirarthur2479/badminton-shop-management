@@ -203,3 +203,82 @@ describe('ShopProductsTab — CSV import button', () => {
     expect(input.accept).toBe('.csv')
   })
 })
+
+// ── Slice 6: batch insert + summary ──────────────────────────────────────────
+
+describe('ShopProductsTab — CSV import batch insert + summary', () => {
+  function makeFileEvent(csvContent) {
+    const file = new File([csvContent], 'products.csv', { type: 'text/csv' })
+    return { target: { files: [file], value: '' } }
+  }
+
+  it('inserts valid rows and shows success summary', async () => {
+    setupMock()
+    const insertSpy = vi.fn().mockResolvedValue({ data: null, error: null })
+    supabase.from.mockImplementation(() => {
+      const chain = makeChain(PRODUCTS)
+      chain.insert = insertSpy
+      return chain
+    })
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+
+    const input = document.querySelector('input[type="file"]')
+    const csv = 'name,price,category\nNew Grip,5,grip\nNew Shoe,80,shoe'
+    await userEvent.upload(input, new File([csv], 'p.csv', { type: 'text/csv' }))
+
+    await waitFor(() => expect(insertSpy).toHaveBeenCalledWith([
+      { name: 'New Grip', price: 5, category: 'grip', description: null, image_url: null, visible: true },
+      { name: 'New Shoe', price: 80, category: 'shoe', description: null, image_url: null, visible: true },
+    ]))
+    await waitFor(() => expect(screen.getByText(/2 products imported/i)).toBeInTheDocument())
+  })
+
+  it('shows skipped count for rows with empty name', async () => {
+    setupMock()
+    supabase.from.mockImplementation(() => {
+      const chain = makeChain(PRODUCTS)
+      chain.insert = vi.fn().mockResolvedValue({ data: null, error: null })
+      return chain
+    })
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+
+    const input = document.querySelector('input[type="file"]')
+    const csv = 'name,price\nGood Grip,5\n,10\n   ,20'
+    await userEvent.upload(input, new File([csv], 'p.csv', { type: 'text/csv' }))
+
+    await waitFor(() => expect(screen.getByText(/1 product imported/i)).toBeInTheDocument())
+    expect(screen.getByText(/2 rows? skipped/i)).toBeInTheDocument()
+  })
+
+  it('shows "0 products imported, N skipped" when all rows invalid', async () => {
+    setupMock()
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+
+    const input = document.querySelector('input[type="file"]')
+    const csv = 'name,price\n,5\n   ,10'
+    await userEvent.upload(input, new File([csv], 'p.csv', { type: 'text/csv' }))
+
+    await waitFor(() => expect(screen.getByText(/0 products imported/i)).toBeInTheDocument())
+  })
+
+  it('summary is dismissable', async () => {
+    setupMock()
+    supabase.from.mockImplementation(() => {
+      const chain = makeChain(PRODUCTS)
+      chain.insert = vi.fn().mockResolvedValue({ data: null, error: null })
+      return chain
+    })
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+
+    const input = document.querySelector('input[type="file"]')
+    await userEvent.upload(input, new File(['name\nGrip'], 'p.csv', { type: 'text/csv' }))
+
+    await waitFor(() => screen.getByText(/1 product imported/i))
+    await userEvent.click(screen.getByRole('button', { name: /dismiss/i }))
+    expect(screen.queryByText(/products? imported/i)).not.toBeInTheDocument()
+  })
+})

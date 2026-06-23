@@ -1,3 +1,4 @@
+import React from 'react'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { InquiryProvider } from '../../contexts/InquiryContext'
@@ -40,12 +41,14 @@ import { act } from '@testing-library/react'
 
 function SheetWithProducts({ products = [] }) {
   const { addItem } = useInquiry()
+  const [open, setOpen] = React.useState(false)
   return (
     <>
       {products.map(p => (
         <button key={p.id} data-testid={`add-${p.id}`} onClick={() => addItem(p)}>add {p.name}</button>
       ))}
-      <InquirySheet open onClose={() => {}} />
+      <button data-testid="open-sheet" onClick={() => setOpen(true)}>Open sheet</button>
+      <InquirySheet open={open} onClose={() => setOpen(false)} />
     </>
   )
 }
@@ -65,6 +68,7 @@ describe('InquirySheet — item list', () => {
     render(wrapWithItems([PRODUCT_A, PRODUCT_B]))
     await user.click(screen.getByTestId('add-1'))
     await user.click(screen.getByTestId('add-2'))
+    await user.click(screen.getByTestId('open-sheet'))
     expect(screen.getByText('Yonex Astrox 99')).toBeInTheDocument()
     expect(screen.getByText('Victor Magan Bag')).toBeInTheDocument()
   })
@@ -74,14 +78,17 @@ describe('InquirySheet — item list', () => {
     render(wrapWithItems([PRODUCT_A, PRODUCT_B]))
     await user.click(screen.getByTestId('add-1'))
     await user.click(screen.getByTestId('add-2'))
+    await user.click(screen.getByTestId('open-sheet'))
     const removeButtons = screen.getAllByRole('button', { name: /remove/i })
     await user.click(removeButtons[0])
     expect(screen.queryByText('Yonex Astrox 99')).not.toBeInTheDocument()
     expect(screen.getByText('Victor Magan Bag')).toBeInTheDocument()
   })
 
-  it('shows empty state when no items', () => {
+  it('shows empty state when no items', async () => {
+    const user = userEvent.setup()
     render(wrapWithItems([]))
+    await user.click(screen.getByTestId('open-sheet'))
     expect(screen.getByText(/your inquiry list is empty/i)).toBeInTheDocument()
   })
 })

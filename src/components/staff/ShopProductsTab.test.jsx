@@ -183,3 +183,23 @@ describe('ShopProductsTab — visible toggle and delete', () => {
     await waitFor(() => expect(screen.queryByText('Yonex Astrox 99')).not.toBeInTheDocument())
   })
 })
+
+// ── Slice 5: CSV import button + file picker ──────────────────────────────────
+
+describe('ShopProductsTab — CSV import button', () => {
+  beforeEach(() => setupMock())
+
+  it('renders an "Import CSV" button in the header', async () => {
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    expect(screen.getByRole('button', { name: /import csv/i })).toBeInTheDocument()
+  })
+
+  it('file input accepts only .csv', async () => {
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    const input = document.querySelector('input[type="file"]')
+    expect(input).not.toBeNull()
+    expect(input.accept).toBe('.csv')
+  })
+})

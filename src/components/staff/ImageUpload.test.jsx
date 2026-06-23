@@ -19,7 +19,7 @@ describe('ImageUpload — render and preview', () => {
     render(<ImageUpload value="" onChange={() => {}} />)
     const input = document.querySelector('input[type="file"]')
     expect(input).not.toBeNull()
-    expect(input.accept).toMatch(/image/)
+    expect(input.accept).toBe('image/jpeg,image/png,image/webp')
   })
 
   it('shows "Upload image" label when no value is set', () => {

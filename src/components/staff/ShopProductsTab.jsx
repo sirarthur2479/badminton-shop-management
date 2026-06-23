@@ -42,6 +42,7 @@ export default function ShopProductsTab() {
   const [scannerOpen, setScannerOpen] = useState(false)
   const [importSummary, setImportSummary] = useState(null)
   const [saleFilter, setSaleFilter] = useState(false)
+  const [imageUploading, setImageUploading] = useState(false)
   const csvInputRef = useRef(null)
 
   const load = useCallback(async () => {
@@ -193,9 +194,9 @@ export default function ShopProductsTab() {
               />
             )}
           </div>
-          <ProductFields values={addDraft} onChange={setAddDraft} />
+          <ProductFields values={addDraft} onChange={setAddDraft} onUploading={setImageUploading} />
           <div className="flex gap-3">
-            <Button variant="primary" onClick={handleAdd} disabled={saving || !addDraft.name} className="py-2 px-5 text-base">
+            <Button variant="primary" onClick={handleAdd} disabled={saving || imageUploading || !addDraft.name} className="py-2 px-5 text-base">
               {saving ? 'Saving...' : 'Save'}
             </Button>
             <Button variant="secondary" onClick={() => { setAdding(false); setScannerOpen(false) }} className="py-2 px-5 text-base">
@@ -258,9 +259,9 @@ export default function ShopProductsTab() {
           {/* Expanded edit */}
           {expandedId === product.id && (
             <div className="border-t px-4 pb-4 pt-3 flex flex-col gap-3 bg-gray-50">
-              <ProductFields values={draft} onChange={setDraft} />
+              <ProductFields values={draft} onChange={setDraft} onUploading={setImageUploading} />
               <div className="flex gap-3">
-                <Button variant="primary" onClick={handleSave} disabled={saving || !draft.name} className="py-2 px-5 text-base">
+                <Button variant="primary" onClick={handleSave} disabled={saving || imageUploading || !draft.name} className="py-2 px-5 text-base">
                   {saving ? 'Saving...' : 'Save'}
                 </Button>
                 <Button variant="secondary" onClick={cancelEdit} className="py-2 px-5 text-base">
@@ -292,7 +293,7 @@ function Thumbnail({ url }) {
   )
 }
 
-function ProductFields({ values, onChange }) {
+function ProductFields({ values, onChange, onUploading }) {
   const set = field => e => onChange(prev => ({ ...prev, [field]: e.target.value }))
   const setCheck = field => e => onChange(prev => ({ ...prev, [field]: e.target.checked }))
 
@@ -314,7 +315,7 @@ function ProductFields({ values, onChange }) {
       </div>
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-gray-600">Product Image</label>
-        <ImageUpload value={values.image_url || ''} onChange={url => onChange(prev => ({ ...prev, image_url: url }))} />
+        <ImageUpload value={values.image_url || ''} onChange={url => onChange(prev => ({ ...prev, image_url: url }))} onUploading={onUploading} />
       </div>
       <div className="flex flex-col gap-1 sm:col-span-2">
         <label className="text-sm font-medium text-gray-600" htmlFor="field-description">Description</label>

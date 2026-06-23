@@ -6,6 +6,9 @@ import { parseCSV, mapRow } from './csvImport'
 
 const CATEGORIES = ['racket', 'string', 'shoe', 'bag', 'grip', 'shuttle', 'other']
 
+const CSV_TEMPLATE = 'name,price,category,description,image_url\nYonex Astrox 99,299,racket,,\n'
+const TEMPLATE_HREF = `data:text/csv;charset=utf-8,${encodeURIComponent(CSV_TEMPLATE)}`
+
 function emptyProduct() {
   return { name: '', category: 'racket', price: '', description: '', image_url: '', visible: true }
 }
@@ -129,6 +132,13 @@ export default function ShopProductsTab() {
 
       {!adding && (
         <div className="flex justify-end gap-3">
+          <a
+            href={TEMPLATE_HREF}
+            download="shop-products-template.csv"
+            className="inline-flex items-center gap-1 rounded-xl border border-gray-200 bg-white px-5 py-3 text-base font-medium text-gray-500 hover:bg-gray-50 transition-colors"
+          >
+            Download template
+          </a>
           <button
             type="button"
             onClick={() => csvInputRef.current?.click()}

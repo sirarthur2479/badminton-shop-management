@@ -27,17 +27,7 @@ function makeInsertChain(data) {
   return chain
 }
 
-function wrap(ui, initialItems = []) {
-  function ProviderWithItems({ children }) {
-    const [React] = [require('react')]
-    return React.createElement(InquiryProvider, null, children)
-  }
-  return <InquiryProvider>{ui}</InquiryProvider>
-}
-
-// helper: render sheet open with pre-loaded items via Add to Inquiry button
 import { InquiryProvider as IP, useInquiry } from '../../contexts/InquiryContext'
-import { act } from '@testing-library/react'
 
 function SheetWithProducts({ products = [] }) {
   const { addItem } = useInquiry()

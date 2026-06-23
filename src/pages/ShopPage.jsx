@@ -4,6 +4,8 @@ import { supabase } from '../supabaseClient'
 import ShopHeader from '../components/shop/ShopHeader'
 import ProductGrid from '../components/shop/ProductGrid'
 import CategoryTabs from '../components/shop/CategoryTabs'
+import InquirySheet from '../components/shop/InquirySheet'
+import { InquiryProvider } from '../contexts/InquiryContext'
 
 async function fetchProducts() {
   const { data } = await supabase.from('shop_products').select('*').eq('visible', true).order('category').order('name')
@@ -30,11 +32,12 @@ function getEnquireHref(settings) {
   return '#'
 }
 
-export default function ShopPage() {
+function ShopPageInner() {
   const { data: settings } = useQuery({ queryKey: ['shop_settings'], queryFn: fetchSettings, staleTime: 10 * 60 * 1000 })
   const { data: products, isLoading } = useQuery({ queryKey: ['shop_products'], queryFn: fetchProducts, staleTime: 5 * 60 * 1000 })
   const [category, setCategory] = useState('all')
   const [search, setSearch] = useState('')
+  const [sheetOpen, setSheetOpen] = useState(false)
 
   const categories = useMemo(() => {
     if (!products) return []
@@ -45,7 +48,7 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <ShopHeader settings={settings} />
+      <ShopHeader settings={settings} onOpenInquiry={() => setSheetOpen(true)} />
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <CategoryTabs categories={categories} selected={category} onChange={setCategory} />
@@ -59,6 +62,15 @@ export default function ShopPage() {
         </div>
         <ProductGrid products={visible} isLoading={isLoading} enquireHref={getEnquireHref(settings)} />
       </main>
+      <InquirySheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
     </div>
+  )
+}
+
+export default function ShopPage() {
+  return (
+    <InquiryProvider>
+      <ShopPageInner />
+    </InquiryProvider>
   )
 }

@@ -16,7 +16,7 @@ function formatDateTime(date) {
   }
 }
 
-export default function StaffDashboard({ onLogout, onNavigate }) {
+export default function StaffDashboard({ onLogout, onNavigate, newInquiryCount = 0 }) {
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
@@ -66,6 +66,22 @@ export default function StaffDashboard({ onLogout, onNavigate }) {
             <div>
               <p className="text-2xl font-bold">Inventory</p>
               <p className="text-gray-400 text-sm mt-0.5">Manage brands, models &amp; strings</p>
+            </div>
+          </button>
+          <button
+            onClick={() => onNavigate('inquiries')}
+            aria-label="Inquiries"
+            className="bg-white hover:bg-gray-50 active:bg-gray-100 active:scale-[0.98] text-gray-900 rounded-2xl border border-gray-200 shadow-sm p-8 flex items-center gap-6 transition-all duration-150 text-left"
+          >
+            <span className="text-4xl shrink-0">📨</span>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-bold">Inquiries</p>
+                {newInquiryCount > 0 && (
+                  <span className="bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5">{newInquiryCount}</span>
+                )}
+              </div>
+              <p className="text-gray-400 text-sm mt-0.5">Shop product inquiries from customers</p>
             </div>
           </button>
           <button

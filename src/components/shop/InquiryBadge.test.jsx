@@ -12,6 +12,8 @@ function wrap(ui) {
 }
 
 describe('ProductCard — Add to Inquiry', () => {
+  beforeEach(() => localStorage.clear())
+
   it('renders an "Add to Inquiry" button', () => {
     render(wrap(<ProductCard product={PRODUCT} enquireHref="#" />))
     expect(screen.getByRole('button', { name: /add to inquiry/i })).toBeInTheDocument()

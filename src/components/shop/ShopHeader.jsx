@@ -1,3 +1,5 @@
+import { useInquiry } from '../../contexts/InquiryContext'
+
 const ACCENT_MAP = {
   green:  { header: 'bg-green-600', cta: 'text-green-700 hover:bg-green-50', sub: 'text-green-100' },
   navy:   { header: 'bg-blue-900',  cta: 'text-blue-900 hover:bg-blue-50',   sub: 'text-blue-200' },
@@ -6,7 +8,9 @@ const ACCENT_MAP = {
   red:    { header: 'bg-red-600',   cta: 'text-red-700 hover:bg-red-50',     sub: 'text-red-100' },
 }
 
-export default function ShopHeader({ settings }) {
+export default function ShopHeader({ settings, onOpenInquiry }) {
+  const { items } = useInquiry()
+  const count = items.reduce((n, i) => n + i.qty, 0)
   const name = settings?.shop_name ?? 'Badminton Pro Shop'
   const tagline = settings?.tagline ?? 'Your local badminton specialist'
   const ctaHref = settings?.phone
@@ -21,12 +25,25 @@ export default function ShopHeader({ settings }) {
           <h1 className="text-2xl font-bold">{name}</h1>
           <p className={`${accent.sub} text-sm mt-1`}>{tagline}</p>
         </div>
-        {ctaHref && (
-          <a href={ctaHref} target="_blank" rel="noreferrer"
-            className={`inline-block bg-white ${accent.cta} font-semibold px-5 py-2 rounded-lg transition-colors text-sm`}>
-            {settings?.phone ? 'WhatsApp Us' : 'Email Us'}
-          </a>
-        )}
+        <div className="flex items-center gap-3">
+          {ctaHref && (
+            <a href={ctaHref} target="_blank" rel="noreferrer"
+              className={`inline-block bg-white ${accent.cta} font-semibold px-5 py-2 rounded-lg transition-colors text-sm`}>
+              {settings?.phone ? 'WhatsApp Us' : 'Email Us'}
+            </a>
+          )}
+          <button
+            onClick={onOpenInquiry}
+            className="relative bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+            Inquiry
+            {count > 0 && (
+              <span data-testid="inquiry-count"
+                className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                {count}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   )

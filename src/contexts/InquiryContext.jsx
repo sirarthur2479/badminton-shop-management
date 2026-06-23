@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
-const InquiryContext = createContext(null)
+const noop = () => {}
+const InquiryContext = createContext({ items: [], addItem: noop, removeItem: noop, clear: noop })
 
 function loadFromStorage() {
   try {

@@ -302,3 +302,72 @@ describe('ShopProductsTab — CSV template download', () => {
     expect(screen.queryByText(/products? imported/i)).not.toBeInTheDocument()
   })
 })
+
+// ── Slice 8: sale_price + sale_ends_at fields in ProductFields ───────────────
+
+describe('ShopProductsTab — sale fields in edit form', () => {
+  it('inline edit form shows a Sale Price field', async () => {
+    const user = userEvent.setup()
+    setupMock()
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByText('Yonex Astrox 99'))
+    expect(screen.getByLabelText(/sale price/i)).toBeInTheDocument()
+  })
+
+  it('inline edit form shows a Sale Ends field', async () => {
+    const user = userEvent.setup()
+    setupMock()
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByText('Yonex Astrox 99'))
+    expect(screen.getByLabelText(/sale ends/i)).toBeInTheDocument()
+  })
+
+  it('Add Product form also shows Sale Price and Sale Ends fields', async () => {
+    const user = userEvent.setup()
+    setupMock()
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByRole('button', { name: /add product/i }))
+    expect(screen.getByLabelText(/sale price/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/sale ends/i)).toBeInTheDocument()
+  })
+})
+
+// ── Slice 9: "On Sale" filter tab ────────────────────────────────────────────
+
+const PRODUCTS_WITH_SALE = [
+  { id: '1', name: 'Yonex Astrox 99', category: 'racket', price: 349.00, sale_price: null,   sale_ends_at: null, description: '', image_url: null, visible: true },
+  { id: '2', name: 'Victor BG80',     category: 'string', price: 22.00,  sale_price: 15.00,  sale_ends_at: null, description: '', image_url: null, visible: true },
+]
+
+describe('ShopProductsTab — On Sale filter tab', () => {
+  it('renders an "On Sale" filter button', async () => {
+    supabase.from.mockImplementation(() => makeChain(PRODUCTS_WITH_SALE))
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    expect(screen.getByRole('button', { name: /on sale/i })).toBeInTheDocument()
+  })
+
+  it('"On Sale" tab shows only products with active sale_price', async () => {
+    const user = userEvent.setup()
+    supabase.from.mockImplementation(() => makeChain(PRODUCTS_WITH_SALE))
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByRole('button', { name: /on sale/i }))
+    expect(screen.getByText('Victor BG80')).toBeInTheDocument()
+    expect(screen.queryByText('Yonex Astrox 99')).not.toBeInTheDocument()
+  })
+
+  it('"All" button resets the filter', async () => {
+    const user = userEvent.setup()
+    supabase.from.mockImplementation(() => makeChain(PRODUCTS_WITH_SALE))
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByRole('button', { name: /on sale/i }))
+    await user.click(screen.getByRole('button', { name: /^all$/i }))
+    expect(screen.getByText('Yonex Astrox 99')).toBeInTheDocument()
+    expect(screen.getByText('Victor BG80')).toBeInTheDocument()
+  })
+})

@@ -1,9 +1,6 @@
 import { Badge } from '../ui/badge'
 import { Card, CardContent } from '../ui/card'
-
-function isSaleActive(product) {
-  return product.sale_price && (!product.sale_ends_at || new Date(product.sale_ends_at) > new Date())
-}
+import { isSaleActive } from '../../lib/saleUtils'
 
 export default function ProductCard({ product, enquireHref }) {
   const onSale = isSaleActive(product)

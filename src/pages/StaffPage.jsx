@@ -4,7 +4,6 @@ import StaffDashboard from '../components/staff/StaffDashboard'
 import OrderQueue from '../components/staff/OrderQueue'
 import InventoryManager from '../components/staff/InventoryManager'
 import ShopSettingsTab from '../components/staff/ShopSettingsTab'
-import Button from '../components/shared/Button'
 
 function StaffContent({ onLogout }) {
   const [view, setView] = useState('dashboard') // 'dashboard' | 'orders' | 'inventory' | 'settings'

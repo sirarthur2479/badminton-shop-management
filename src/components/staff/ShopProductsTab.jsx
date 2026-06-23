@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../../supabaseClient'
 import Button from '../shared/Button'
+import BarcodeScanner from './BarcodeScanner'
 
 const CATEGORIES = ['racket', 'string', 'shoe', 'bag', 'grip', 'shuttle', 'other']
 
@@ -19,6 +20,7 @@ export default function ShopProductsTab() {
   const [adding, setAdding] = useState(false)
   const [addDraft, setAddDraft] = useState(emptyProduct())
   const [saving, setSaving] = useState(false)
+  const [scannerOpen, setScannerOpen] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -62,7 +64,7 @@ export default function ShopProductsTab() {
     const { error: err } = await supabase
       .from('shop_products')
       .insert([{ ...addDraft, price: Number(addDraft.price) || null }])
-    if (!err) { setAdding(false); setAddDraft(emptyProduct()); load() }
+    if (!err) { setAdding(false); setAddDraft(emptyProduct()); setScannerOpen(false); load() }
     else setError(err.message)
     setSaving(false)
   }
@@ -100,12 +102,32 @@ export default function ShopProductsTab() {
       {adding && (
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 flex flex-col gap-3">
           <h3 className="font-semibold text-blue-900">New Product</h3>
+          <div className="flex flex-col gap-2">
+            {!scannerOpen && (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setScannerOpen(true)}
+                className="py-2 px-4 text-sm self-start"
+              >
+                Scan Barcode
+              </Button>
+            )}
+            {scannerOpen && (
+              <BarcodeScanner
+                onResult={info => {
+                  setAddDraft(d => ({ ...d, ...info }))
+                  setScannerOpen(false)
+                }}
+              />
+            )}
+          </div>
           <ProductFields values={addDraft} onChange={setAddDraft} />
           <div className="flex gap-3">
             <Button variant="primary" onClick={handleAdd} disabled={saving || !addDraft.name} className="py-2 px-5 text-base">
               {saving ? 'Saving...' : 'Save'}
             </Button>
-            <Button variant="secondary" onClick={() => setAdding(false)} className="py-2 px-5 text-base">
+            <Button variant="secondary" onClick={() => { setAdding(false); setScannerOpen(false) }} className="py-2 px-5 text-base">
               Cancel
             </Button>
           </div>

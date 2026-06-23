@@ -2,6 +2,13 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import BarcodeScanner from './BarcodeScanner'
 
+vi.mock('../../supabaseClient', () => ({
+  supabase: { from: vi.fn() },
+  isConfigured: () => true,
+}))
+
+import { supabase } from '../../supabaseClient'
+
 // BarcodeDetector is not defined in jsdom — tests run in the fallback branch by default
 
 describe('BarcodeScanner — fallback (BarcodeDetector unavailable)', () => {
@@ -101,19 +108,21 @@ describe('BarcodeScanner — ShopProductsTab integration', () => {
   })
   afterEach(() => {
     vi.unstubAllGlobals()
+    vi.clearAllMocks()
   })
 
-  it('renders Scan Barcode button in the Add Product form', async () => {
-    // Import ShopProductsTab dynamically to avoid circular imports in this slice
-    const { default: ShopProductsTab } = await import('./ShopProductsTab')
-
-    const { supabase } = await import('../../supabaseClient')
+  function makeChain() {
     const chain = {
       select: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
       then: vi.fn((cb) => Promise.resolve(cb({ data: [], error: null }))),
     }
-    supabase.from.mockReturnValue(chain)
+    return chain
+  }
+
+  it('renders Scan Barcode button in the Add Product form', async () => {
+    const { default: ShopProductsTab } = await import('./ShopProductsTab')
+    supabase.from.mockReturnValue(makeChain())
 
     render(<ShopProductsTab />)
     await userEvent.click(await screen.findByText('+ Add Product'))
@@ -122,14 +131,7 @@ describe('BarcodeScanner — ShopProductsTab integration', () => {
 
   it('pre-fills name, description, image_url after a successful lookup', async () => {
     const { default: ShopProductsTab } = await import('./ShopProductsTab')
-    const { supabase } = await import('../../supabaseClient')
-
-    const chain = {
-      select: vi.fn().mockReturnThis(),
-      order: vi.fn().mockReturnThis(),
-      then: vi.fn((cb) => Promise.resolve(cb({ data: [], error: null }))),
-    }
-    supabase.from.mockReturnValue(chain)
+    supabase.from.mockReturnValue(makeChain())
 
     fetch.mockResolvedValueOnce({
       ok: true,

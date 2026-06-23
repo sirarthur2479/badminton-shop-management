@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import ShopSettingsTab from './ShopSettingsTab'
 
 // Mock supabase
@@ -14,6 +14,22 @@ vi.mock('../../supabaseClient', () => ({
 beforeEach(() => {
   vi.clearAllMocks()
   mockFrom.mockReturnValue({ select: mockSelect, upsert: vi.fn().mockResolvedValue({ error: null }) })
+})
+
+describe('ShopSettingsTab — accent colour picker', () => {
+  it('renders 5 colour buttons', async () => {
+    mockSingle.mockResolvedValue({ data: null, error: null })
+    render(<ShopSettingsTab />)
+    expect(screen.getAllByRole('button', { name: /green|navy|orange|purple|red/i })).toHaveLength(5)
+  })
+
+  it('clicking a colour button updates accent_colour selection', async () => {
+    mockSingle.mockResolvedValue({ data: { accent_colour: 'green', shop_name: '' }, error: null })
+    render(<ShopSettingsTab />)
+    const navyBtn = screen.getByRole('button', { name: /navy/i })
+    fireEvent.click(navyBtn)
+    expect(navyBtn.className).toMatch(/ring-2/)
+  })
 })
 
 describe('ShopSettingsTab — form renders + loads settings', () => {

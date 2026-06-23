@@ -110,6 +110,23 @@ export default function ShopProductsTab() {
     <div className="flex flex-col gap-4">
       {error && <p className="text-red-600 bg-red-50 rounded-xl px-4 py-3">{error}</p>}
 
+      {importSummary && (
+        <div className="flex items-center justify-between gap-3 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-green-800 text-sm">
+          <span>
+            {importSummary.imported === 1 ? '1 product imported' : `${importSummary.imported} products imported`}
+            {importSummary.skipped > 0 && `. ${importSummary.skipped} ${importSummary.skipped === 1 ? 'row' : 'rows'} skipped (empty name).`}
+          </span>
+          <button
+            type="button"
+            aria-label="Dismiss"
+            onClick={() => setImportSummary(null)}
+            className="text-green-600 hover:text-green-800 font-bold text-lg leading-none"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {!adding && (
         <div className="flex justify-end gap-3">
           <button

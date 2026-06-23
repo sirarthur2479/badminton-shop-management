@@ -119,6 +119,7 @@ export default function ShopProductsTab() {
                   setAddDraft(d => ({ ...d, ...info }))
                   setScannerOpen(false)
                 }}
+                onCancel={() => setScannerOpen(false)}
               />
             )}
           </div>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import Button from '../shared/Button'
 
 async function lookupBarcode(upc) {
-  const res = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${upc}`)
+  const res = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${encodeURIComponent(upc)}`)
   if (!res.ok) throw new Error('Lookup failed')
   const json = await res.json()
   const item = json.items?.[0]
@@ -16,7 +16,7 @@ async function lookupBarcode(upc) {
 
 const inputClass = 'w-full min-h-[44px] px-4 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-blue-500'
 
-export default function BarcodeScanner({ onResult }) {
+export default function BarcodeScanner({ onResult, onCancel }) {
   const hasNativeDetector = typeof window !== 'undefined' && 'BarcodeDetector' in window
   const [showScanner, setShowScanner] = useState(false)
   const [barcode, setBarcode] = useState('')
@@ -51,18 +51,25 @@ export default function BarcodeScanner({ onResult }) {
       const detector = new window.BarcodeDetector({ formats: ['ean_13', 'upc_a', 'upc_e'] })
       const scan = async () => {
         if (!videoRef.current || !streamRef.current) return
-        const barcodes = await detector.detect(videoRef.current)
-        if (barcodes.length > 0) {
-          const raw = barcodes[0].rawValue
+        try {
+          const barcodes = await detector.detect(videoRef.current)
+          if (barcodes.length > 0) {
+            const raw = barcodes[0].rawValue
+            stopCamera()
+            setShowScanner(false)
+            await handleLookup(raw)
+          } else {
+            rafRef.current = requestAnimationFrame(scan)
+          }
+        } catch {
           stopCamera()
           setShowScanner(false)
-          await handleLookup(raw)
-        } else {
-          rafRef.current = requestAnimationFrame(scan)
+          setError('Scan error — try entering the barcode manually.')
         }
       }
       rafRef.current = requestAnimationFrame(scan)
     } catch (err) {
+      stopCamera()
       setError('Camera error: ' + err.message)
       setShowScanner(false)
     }
@@ -109,19 +116,26 @@ export default function BarcodeScanner({ onResult }) {
           )}
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex gap-2 items-center">
-          <input
-            type="text"
-            value={barcode}
-            onChange={e => setBarcode(e.target.value)}
-            placeholder="Enter barcode number…"
-            className={inputClass}
-            disabled={loading}
-          />
-          <Button type="submit" variant="secondary" disabled={loading || !barcode.trim()} className="py-2 px-4 text-sm shrink-0">
-            {loading ? 'Looking up…' : 'Look up'}
-          </Button>
-        </form>
+        <div className="flex flex-col gap-2">
+          <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+            <input
+              type="text"
+              value={barcode}
+              onChange={e => setBarcode(e.target.value)}
+              placeholder="Enter barcode number…"
+              className={inputClass}
+              disabled={loading}
+            />
+            <Button type="submit" variant="secondary" disabled={loading || !barcode.trim()} className="py-2 px-4 text-sm shrink-0">
+              {loading ? 'Looking up…' : 'Look up'}
+            </Button>
+          </form>
+          {onCancel && (
+            <button type="button" onClick={onCancel} className="text-xs text-gray-400 hover:text-gray-600 self-start underline">
+              Cancel
+            </button>
+          )}
+        </div>
       )}
 
       <p className="text-xs text-gray-400">UPC Item DB free tier: 100 lookups/day</p>

@@ -68,6 +68,17 @@ export default function StaffDashboard({ onLogout, onNavigate }) {
               <p className="text-gray-400 text-sm mt-0.5">Manage brands, models &amp; strings</p>
             </div>
           </button>
+          <button
+            onClick={() => onNavigate('settings')}
+            aria-label="Settings"
+            className="bg-white hover:bg-gray-50 active:bg-gray-100 active:scale-[0.98] text-gray-900 rounded-2xl border border-gray-200 shadow-sm p-8 flex items-center gap-6 transition-all duration-150 text-left"
+          >
+            <span className="text-4xl shrink-0">⚙️</span>
+            <div>
+              <p className="text-2xl font-bold">Settings</p>
+              <p className="text-gray-400 text-sm mt-0.5">Shop name, colours &amp; contact info</p>
+            </div>
+          </button>
         </div>
       </main>
     </div>

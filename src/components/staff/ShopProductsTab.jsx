@@ -3,6 +3,7 @@ import { supabase } from '../../supabaseClient'
 import Button from '../shared/Button'
 import BarcodeScanner from './BarcodeScanner'
 import { parseCSV, mapRow } from './csvImport'
+import { isSaleActive } from '../../lib/saleUtils'
 
 const CATEGORIES = ['racket', 'string', 'shoe', 'bag', 'grip', 'shuttle', 'other']
 
@@ -26,6 +27,7 @@ export default function ShopProductsTab() {
   const [saving, setSaving] = useState(false)
   const [scannerOpen, setScannerOpen] = useState(false)
   const [importSummary, setImportSummary] = useState(null)
+  const [saleFilter, setSaleFilter] = useState(false)
   const csvInputRef = useRef(null)
 
   const load = useCallback(async () => {
@@ -189,13 +191,32 @@ export default function ShopProductsTab() {
         </div>
       )}
 
+      {!loading && products.length > 0 && (
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setSaleFilter(false)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${!saleFilter ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+          >
+            All
+          </button>
+          <button
+            type="button"
+            onClick={() => setSaleFilter(true)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${saleFilter ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+          >
+            On Sale
+          </button>
+        </div>
+      )}
+
       {loading && <p className="text-gray-400 text-center py-8">Loading...</p>}
 
       {!loading && products.length === 0 && !adding && (
         <p className="text-center text-gray-400 py-8">No products yet. Add one above.</p>
       )}
 
-      {!loading && products.map(product => (
+      {!loading && (saleFilter ? products.filter(isSaleActive) : products).map(product => (
         <div key={product.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           {/* Row */}
           <div
@@ -284,6 +305,14 @@ function ProductFields({ values, onChange }) {
       <div className="flex flex-col gap-1 sm:col-span-2">
         <label className="text-sm font-medium text-gray-600" htmlFor="field-description">Description</label>
         <textarea id="field-description" value={values.description || ''} onChange={set('description')} className={`${inputClass} h-20 resize-none`} placeholder="Optional description" />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-gray-600" htmlFor="field-sale_price">Sale Price (NZD) — leave blank for no sale</label>
+        <input id="field-sale_price" type="number" min={0} step="0.01" value={values.sale_price ?? ''} onChange={set('sale_price')} className={inputClass} placeholder="e.g. 249.00" />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-medium text-gray-600" htmlFor="field-sale_ends_at">Sale Ends (optional)</label>
+        <input id="field-sale_ends_at" type="date" value={values.sale_ends_at ? values.sale_ends_at.slice(0, 10) : ''} onChange={set('sale_ends_at')} className={inputClass} />
       </div>
       <div className="flex items-center gap-2">
         <input id="field-visible" type="checkbox" checked={values.visible ?? true} onChange={setCheck('visible')} className="w-5 h-5 accent-blue-600" />

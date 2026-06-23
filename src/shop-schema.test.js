@@ -36,9 +36,14 @@ describe('supabase/schema.sql — shop tables', () => {
   })
 
   it('at least one seed product has a sale_price', () => {
-    // sale_price appears as a non-null value in an insert row
+    // The INSERT header lists sale_price as a column; at least one values row
+    // must have a non-null numeric in that position.
+    // Detect: a row tuple where the 4th comma-separated value is a decimal.
     const insertSection = sql.slice(sql.search(/insert into shop_products/i))
-    expect(insertSection).toMatch(/sale_price\s*=|\d+\.\d+.*sale_price|sale_price.*\d+\.\d+/)
+    // Each row tuple: (str, str, num, <sale_price>, ...)
+    // Rows with a numeric sale_price have: price_num, sale_num, where sale_num != null
+    const rowWithSale = insertSection.match(/\(\s*'[^']*'\s*,\s*'[^']*'\s*,\s*\d+\.\d+\s*,\s*\d+\.\d+/)
+    expect(rowWithSale).not.toBeNull()
   })
 
   it('existing stringing_orders table is still defined', () => {

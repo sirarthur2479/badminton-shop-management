@@ -64,6 +64,54 @@ create table stringing_orders (
 -- If adding to an existing database, run this instead of recreating the table:
 -- alter table stringing_orders add column if not exists paid boolean not null default false;
 
+-- ─── shop_products ────────────────────────────────────────────────────────────
+create table if not exists shop_products (
+  id           uuid primary key default gen_random_uuid(),
+  created_at   timestamptz default now(),
+  name         text not null,
+  category     text not null check (category in ('racket','string','shoe','bag','grip','shuttle','other')),
+  price        numeric(10,2),
+  sale_price   numeric(10,2),
+  sale_ends_at timestamptz,
+  description  text,
+  image_url    text,
+  visible      boolean default true
+);
+
+-- ─── shop_settings (single row) ───────────────────────────────────────────────
+create table if not exists shop_settings (
+  id            uuid primary key default gen_random_uuid(),
+  shop_name     text not null default 'Badminton Pro Shop',
+  tagline       text default 'Your local badminton specialist',
+  phone         text,
+  email         text,
+  accent_colour text default 'green',
+  about         text
+);
+
+-- ── Shop settings seed ────────────────────────────────────────────────────────
+insert into shop_settings (shop_name, tagline, accent_colour)
+values ('Badminton Pro Shop', 'Your local badminton specialist', 'green');
+
+-- ── Shop products seed ────────────────────────────────────────────────────────
+insert into shop_products (name, category, price, sale_price, description, visible) values
+  ('Yonex Astrox 99 Pro',         'racket',  349.00,   null, 'High-flex shaft for all-round smash play. Yonex top-tier.',         true),
+  ('Yonex Nanoflare 1000Z',       'racket',  379.00,   null, 'Ultra-fast head-light frame for elite net play.',                   true),
+  ('Victor Thruster K 9900',      'racket',  349.00, 299.00, 'Stiff carbon frame with extra reinforcement for full-power hitters.', true),
+  ('Li-Ning Axforce 100',         'racket',  319.00, 279.00, 'Carbon frame designed for high tension and aggressive attack.',     true),
+  ('Carlton Kinesis Ultra Tour',  'racket',  219.00,   null, 'Lightweight all-round racket perfect for club and social play.',    true),
+  ('Yonex BG80',                  'string',   22.00,   null, 'High repulsion string. Favoured by shuttle control players.',       true),
+  ('Yonex Aerobite',              'string',   28.00,   null, 'Hybrid string set for spin and control. Bi-component design.',      true),
+  ('Victor VBS-70',               'string',   20.00,   null, 'All-round performance string with durable coating.',                true),
+  ('Victor Magan 9 Badminton Bag','bag',      149.00,  null, '9-racket bag with thermal compartment and shoe pocket.',            true),
+  ('Yonex Pro Backpack BA92012',  'bag',       99.00,  null, 'Compact 2-racket backpack, padded laptop sleeve.',                  true),
+  ('Yonex AC102 Overgrip 3-pack', 'grip',      12.00,  null, 'Tacky finish grip for better control in humid conditions.',         true),
+  ('Victor Comfortable Grip',     'grip',       8.00,  null, 'Absorbent grip tape suitable for all racket types.',                true),
+  ('Yonex Mavis 350 6-pack',      'shuttle',   32.00,  null, 'Nylon shuttlecock, medium speed. Ideal for recreational play.',     true),
+  ('Yonex SHB65Z Shoes',          'shoe',     189.00, 159.00,'Lightweight court shoe with non-marking carbon-fibre outsole.',     true),
+  ('Victor SH-A960 Shoes',        'shoe',     159.00,  null, 'Durable badminton shoe with reinforced toe cap.',                   true);
+
+
 -- Seed data: common brands
 insert into racket_brands (name) values ('Yonex'),('Victor'),('Li-Ning'),('Babolat'),('Carlton')
   on conflict (name) do nothing;

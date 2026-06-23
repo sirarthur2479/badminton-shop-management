@@ -47,9 +47,10 @@ export default function ShopProductsTab() {
 
   async function handleSave() {
     setSaving(true)
+    const { id, created_at, ...fields } = draft
     const { error: err } = await supabase
       .from('shop_products')
-      .update({ ...draft, price: Number(draft.price) || null })
+      .update({ ...fields, price: Number(fields.price) || null })
       .eq('id', expandedId)
     if (!err) { setExpandedId(null); load() }
     else setError(err.message)
@@ -67,11 +68,14 @@ export default function ShopProductsTab() {
   }
 
   async function handleToggleVisible(product) {
-    await supabase
+    const nextVisible = !product.visible
+    const { error: err } = await supabase
       .from('shop_products')
-      .update({ visible: !product.visible })
+      .update({ visible: nextVisible })
       .eq('id', product.id)
-    setProducts(prev => prev.map(p => p.id === product.id ? { ...p, visible: !p.visible } : p))
+    if (err) { setError(err.message); return }
+    setProducts(prev => prev.map(p => p.id === product.id ? { ...p, visible: nextVisible } : p))
+    if (expandedId === product.id) setDraft(prev => ({ ...prev, visible: nextVisible }))
   }
 
   async function handleDelete(id) {
@@ -144,7 +148,7 @@ export default function ShopProductsTab() {
             <div className="border-t px-4 pb-4 pt-3 flex flex-col gap-3 bg-gray-50">
               <ProductFields values={draft} onChange={setDraft} />
               <div className="flex gap-3">
-                <Button variant="primary" onClick={handleSave} disabled={saving} className="py-2 px-5 text-base">
+                <Button variant="primary" onClick={handleSave} disabled={saving || !draft.name} className="py-2 px-5 text-base">
                   {saving ? 'Saving...' : 'Save'}
                 </Button>
                 <Button variant="secondary" onClick={cancelEdit} className="py-2 px-5 text-base">

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../../supabaseClient'
 import Button from '../shared/Button'
 import BarcodeScanner from './BarcodeScanner'
+import { parseCSV, mapRow } from './csvImport'
 
 const CATEGORIES = ['racket', 'string', 'shoe', 'bag', 'grip', 'shuttle', 'other']
 
@@ -21,6 +22,8 @@ export default function ShopProductsTab() {
   const [addDraft, setAddDraft] = useState(emptyProduct())
   const [saving, setSaving] = useState(false)
   const [scannerOpen, setScannerOpen] = useState(false)
+  const [importSummary, setImportSummary] = useState(null)
+  const csvInputRef = useRef(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -87,12 +90,36 @@ export default function ShopProductsTab() {
     else setError(err.message)
   }
 
+  async function handleCSVUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    e.target.value = ''
+    const text = await file.text()
+    const rawRows = parseCSV(text)
+    const valid = rawRows.map(mapRow).filter(Boolean)
+    const skipped = rawRows.length - valid.length
+    if (valid.length > 0) {
+      const { error: err } = await supabase.from('shop_products').insert(valid)
+      if (err) { setError(err.message); return }
+      await load()
+    }
+    setImportSummary({ imported: valid.length, skipped })
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {error && <p className="text-red-600 bg-red-50 rounded-xl px-4 py-3">{error}</p>}
 
       {!adding && (
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => csvInputRef.current?.click()}
+            className="inline-flex items-center gap-1 rounded-xl border border-gray-300 bg-white px-5 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Import CSV
+          </button>
+          <input ref={csvInputRef} type="file" accept=".csv" className="hidden" onChange={handleCSVUpload} />
           <Button variant="primary" onClick={() => { setAdding(true); setAddDraft(emptyProduct()) }} className="py-3 px-6 text-base">
             + Add Product
           </Button>

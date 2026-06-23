@@ -28,15 +28,15 @@ export default function BarcodeScanner({ onResult }) {
   const streamRef = useRef(null)
   const rafRef = useRef(null)
 
-  useEffect(() => {
-    return () => stopCamera()
-  }, [])
-
   function stopCamera() {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
     if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop())
     streamRef.current = null
   }
+
+  useEffect(() => {
+    return () => stopCamera()
+  }, [])
 
   async function startCamera() {
     setShowScanner(true)

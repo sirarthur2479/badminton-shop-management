@@ -26,13 +26,15 @@ const PRODUCTS = [
 ]
 
 function makeChain(resolvedValue) {
+  const result = { data: resolvedValue, error: null }
   const chain = {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
-    single: vi.fn().mockResolvedValue({ data: resolvedValue, error: null }),
+    single: vi.fn().mockReturnThis(),
+    then: (res, rej) => Promise.resolve(result).then(res, rej),
+    catch: (rej) => Promise.resolve(result).catch(rej),
   }
-  chain.order.mockResolvedValue({ data: resolvedValue, error: null })
   return chain
 }
 

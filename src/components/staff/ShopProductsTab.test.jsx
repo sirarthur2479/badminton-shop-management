@@ -393,3 +393,34 @@ describe('ShopProductsTab — On Sale filter tab', () => {
     expect(screen.getByText('Victor BG80')).toBeInTheDocument()
   })
 })
+
+// ── Slice 10: ImageUpload integration in ProductFields ───────────────────────
+
+describe('ShopProductsTab — ImageUpload replaces URL text input', () => {
+  beforeEach(() => setupMock())
+
+  it('add form shows "Upload image" button instead of a URL text input', async () => {
+    const user = userEvent.setup()
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByRole('button', { name: /add product/i }))
+    expect(screen.queryByLabelText(/image url/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/upload image/i)).toBeInTheDocument()
+  })
+
+  it('edit form for a product with existing image_url shows "Change image" in the form', async () => {
+    const user = userEvent.setup()
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByText('Yonex Astrox 99'))
+    expect(screen.getByText(/change image/i)).toBeInTheDocument()
+  })
+
+  it('edit form for a product without image_url shows "Upload image"', async () => {
+    const user = userEvent.setup()
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Victor BG80'))
+    await user.click(screen.getByText('Victor BG80'))
+    expect(screen.getByText(/upload image/i)).toBeInTheDocument()
+  })
+})

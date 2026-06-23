@@ -16,6 +16,43 @@ beforeEach(() => {
   mockFrom.mockReturnValue({ select: mockSelect, upsert: vi.fn().mockResolvedValue({ error: null }) })
 })
 
+describe('ShopSettingsTab — save handler + validation', () => {
+  it('save calls Supabase upsert with correct payload', async () => {
+    const mockUpsert = vi.fn().mockResolvedValue({ error: null })
+    mockFrom.mockReturnValue({ select: mockSelect, upsert: mockUpsert })
+    mockSingle.mockResolvedValue({ data: { id: 'abc', shop_name: 'Test', tagline: '', phone: '', email: '', accent_colour: 'green', about: '' }, error: null })
+    render(<ShopSettingsTab />)
+    await waitFor(() => expect(screen.getByDisplayValue('Test')).toBeInTheDocument())
+    fireEvent.click(screen.getByRole('button', { name: /save/i }))
+    await waitFor(() => {
+      expect(mockUpsert).toHaveBeenCalledWith(
+        expect.objectContaining({ shop_name: 'Test', accent_colour: 'green' }),
+        expect.objectContaining({ onConflict: 'id' })
+      )
+    })
+  })
+
+  it('empty shop_name prevents save and shows error', async () => {
+    const mockUpsert = vi.fn().mockResolvedValue({ error: null })
+    mockFrom.mockReturnValue({ select: mockSelect, upsert: mockUpsert })
+    mockSingle.mockResolvedValue({ data: null, error: null })
+    render(<ShopSettingsTab />)
+    fireEvent.click(screen.getByRole('button', { name: /save/i }))
+    expect(await screen.findByText(/shop name is required/i)).toBeInTheDocument()
+    expect(mockUpsert).not.toHaveBeenCalled()
+  })
+
+  it('success message appears after save', async () => {
+    const mockUpsert = vi.fn().mockResolvedValue({ error: null })
+    mockFrom.mockReturnValue({ select: mockSelect, upsert: mockUpsert })
+    mockSingle.mockResolvedValue({ data: { id: 'abc', shop_name: 'Shop', accent_colour: 'green' }, error: null })
+    render(<ShopSettingsTab />)
+    await waitFor(() => expect(screen.getByDisplayValue('Shop')).toBeInTheDocument())
+    fireEvent.click(screen.getByRole('button', { name: /save/i }))
+    expect(await screen.findByText(/settings saved/i)).toBeInTheDocument()
+  })
+})
+
 describe('ShopSettingsTab — accent colour picker', () => {
   it('renders 5 colour buttons', async () => {
     mockSingle.mockResolvedValue({ data: null, error: null })

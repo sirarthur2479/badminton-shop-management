@@ -151,6 +151,7 @@ describe('BarcodeScanner — ShopProductsTab integration', () => {
       expect(screen.getByDisplayValue('Test Racket')).toBeInTheDocument()
     })
     expect(screen.getByDisplayValue('A great racket')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('https://img.example.com/racket.jpg')).toBeInTheDocument()
+    // image_url is now shown as a preview thumbnail in ImageUpload, not a text input
+    expect(document.querySelector('img[src="https://img.example.com/racket.jpg"]')).not.toBeNull()
   })
 })

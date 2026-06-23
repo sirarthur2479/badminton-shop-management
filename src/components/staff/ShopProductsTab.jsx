@@ -4,6 +4,7 @@ import Button from '../shared/Button'
 import BarcodeScanner from './BarcodeScanner'
 import { parseCSV, mapRow } from './csvImport'
 import { isSaleActive } from '../../lib/saleUtils'
+import ImageUpload from './ImageUpload'
 
 const CATEGORIES = ['racket', 'string', 'shoe', 'bag', 'grip', 'shuttle', 'other']
 
@@ -312,8 +313,8 @@ function ProductFields({ values, onChange }) {
         <input id="field-price" type="number" min={0} step="0.01" value={values.price ?? ''} onChange={set('price')} className={inputClass} placeholder="0.00" />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-600" htmlFor="field-image_url">Image URL</label>
-        <input id="field-image_url" type="text" value={values.image_url || ''} onChange={set('image_url')} className={inputClass} placeholder="https://..." />
+        <label className="text-sm font-medium text-gray-600">Product Image</label>
+        <ImageUpload value={values.image_url || ''} onChange={url => onChange(prev => ({ ...prev, image_url: url }))} />
       </div>
       <div className="flex flex-col gap-1 sm:col-span-2">
         <label className="text-sm font-medium text-gray-600" htmlFor="field-description">Description</label>

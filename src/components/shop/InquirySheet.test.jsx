@@ -63,6 +63,7 @@ describe('InquirySheet — item list', () => {
     supabase.from.mockReturnValue(makeInsertChain({ id: 'inq-001' }))
   })
 
+
   it('shows each added product with its name and price', async () => {
     const user = userEvent.setup()
     render(wrapWithItems([PRODUCT_A, PRODUCT_B]))
@@ -90,5 +91,50 @@ describe('InquirySheet — item list', () => {
     render(wrapWithItems([]))
     await user.click(screen.getByTestId('open-sheet'))
     expect(screen.getByText(/your inquiry list is empty/i)).toBeInTheDocument()
+  })
+})
+
+describe('InquirySheet — contact form + submit', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    supabase.from.mockReturnValue(makeInsertChain({ id: 'inq-001' }))
+  })
+
+  async function openSheetWithItem() {
+    const user = userEvent.setup()
+    render(wrapWithItems([PRODUCT_A]))
+    await user.click(screen.getByTestId('add-1'))
+    await user.click(screen.getByTestId('open-sheet'))
+    return user
+  }
+
+  it('submit without name shows validation error', async () => {
+    const user = await openSheetWithItem()
+    await user.click(screen.getByRole('button', { name: /send inquiry/i }))
+    expect(screen.getByText(/name is required/i)).toBeInTheDocument()
+  })
+
+  it('submit without phone AND email shows validation error', async () => {
+    const user = await openSheetWithItem()
+    await user.type(screen.getByPlaceholderText(/your name/i), 'Alice')
+    await user.click(screen.getByRole('button', { name: /send inquiry/i }))
+    expect(screen.getByText(/phone or email is required/i)).toBeInTheDocument()
+  })
+
+  it('valid submit with name + email calls supabase insert', async () => {
+    const user = await openSheetWithItem()
+    await user.type(screen.getByPlaceholderText(/your name/i), 'Alice')
+    await user.type(screen.getByPlaceholderText(/email/i), 'alice@example.com')
+    await user.click(screen.getByRole('button', { name: /send inquiry/i }))
+    expect(supabase.from).toHaveBeenCalledWith('shop_inquiries')
+  })
+
+  it('success state shows confirmation message with inquiry id', async () => {
+    const user = await openSheetWithItem()
+    await user.type(screen.getByPlaceholderText(/your name/i), 'Alice')
+    await user.type(screen.getByPlaceholderText(/phone/i), '0211234567')
+    await user.click(screen.getByRole('button', { name: /send inquiry/i }))
+    expect(await screen.findByText(/inquiry sent/i)).toBeInTheDocument()
+    expect(screen.getByText(/inq-001/)).toBeInTheDocument()
   })
 })

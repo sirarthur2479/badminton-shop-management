@@ -57,7 +57,7 @@ function StaffContent({ onLogout }) {
           <button onClick={handleBack} className="text-blue-600 text-lg font-medium">← Back</button>
           <h1 className="text-xl font-bold text-gray-900">Inquiries</h1>
         </div>
-        <InquiriesTab />
+        <InquiriesTab onNewCountChange={setNewInquiryCount} />
       </div>
     )
   }

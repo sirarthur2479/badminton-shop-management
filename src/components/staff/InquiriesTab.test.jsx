@@ -119,6 +119,31 @@ describe('InquiriesTab — click-to-expand', () => {
   })
 })
 
+describe('InquiriesTab — expanded row contact details', () => {
+  it('expanded row shows customer phone in contact section', async () => {
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    const expanded = screen.getByTestId('inquiry-expanded-inq-1')
+    expect(expanded).toHaveTextContent('021 111 2222')
+  })
+
+  it('expanded row shows customer email when phone is null', async () => {
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Bob Tran'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-2'))
+    const expanded = screen.getByTestId('inquiry-expanded-inq-2')
+    expect(expanded).toHaveTextContent('bob@example.com')
+  })
+
+  it('"Mark Replied" button absent on already-replied row', async () => {
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Bob Tran'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-2'))
+    expect(screen.queryByRole('button', { name: /mark replied/i })).not.toBeInTheDocument()
+  })
+})
+
 describe('InquiriesTab — status actions', () => {
   it('"Mark Replied" calls supabase update with status replied', async () => {
     const mockUpdate = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) })
@@ -151,6 +176,21 @@ describe('InquiriesTab — status actions', () => {
     await waitFor(() => {
       const badges = screen.getAllByText('Replied')
       expect(badges.length).toBeGreaterThanOrEqual(1)
+    })
+  })
+
+  it('calls onNewCountChange with updated new count after status change', async () => {
+    const mockEq = vi.fn().mockResolvedValue({ error: null })
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq })
+    mockFrom.mockReturnValue({ select: mockSelect, update: mockUpdate })
+    const onNewCountChange = vi.fn()
+    render(<InquiriesTab onNewCountChange={onNewCountChange} />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    fireEvent.click(screen.getByRole('button', { name: /mark replied/i }))
+    await waitFor(() => {
+      // inq-1 was the only 'new' one; after marking replied, count should be 0
+      expect(onNewCountChange).toHaveBeenCalledWith(0)
     })
   })
 })

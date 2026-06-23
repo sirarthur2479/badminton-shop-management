@@ -18,7 +18,7 @@ function formatDate(iso) {
   return d.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-export default function InquiriesTab() {
+export default function InquiriesTab({ onNewCountChange }) {
   const [inquiries, setInquiries] = useState([])
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState(null)
@@ -37,7 +37,11 @@ export default function InquiriesTab() {
 
   async function setStatus(id, status) {
     await supabase.from('shop_inquiries').update({ status }).eq('id', id)
-    setInquiries(prev => prev.map(i => i.id === id ? { ...i, status } : i))
+    setInquiries(prev => {
+      const updated = prev.map(i => i.id === id ? { ...i, status } : i)
+      onNewCountChange?.(updated.filter(i => i.status === 'new').length)
+      return updated
+    })
   }
 
   if (loading) return <div className="p-6 text-gray-500">Loading...</div>

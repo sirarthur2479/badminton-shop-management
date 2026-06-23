@@ -264,6 +264,26 @@ describe('ShopProductsTab — CSV import batch insert + summary', () => {
     await waitFor(() => expect(screen.getByText(/0 products imported/i)).toBeInTheDocument())
   })
 
+// ── Slice 7: template download link ──────────────────────────────────────────
+
+describe('ShopProductsTab — CSV template download', () => {
+  beforeEach(() => setupMock())
+
+  it('renders a "Download template" link', async () => {
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    expect(screen.getByRole('link', { name: /download template/i })).toBeInTheDocument()
+  })
+
+  it('template link has a data: href with correct CSV headers', async () => {
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    const link = screen.getByRole('link', { name: /download template/i })
+    expect(link.href).toMatch(/^data:text\/csv/)
+    expect(link.download).toMatch(/\.csv$/)
+  })
+})
+
   it('summary is dismissable', async () => {
     setupMock()
     supabase.from.mockImplementation(() => {

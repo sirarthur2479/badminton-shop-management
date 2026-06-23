@@ -16,6 +16,19 @@ function emptyProduct() {
 
 const inputClass = 'w-full min-h-[48px] px-4 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-blue-500'
 
+// Coerce empty-string numeric/date fields to null so Postgres doesn't reject them.
+// sale_ends_at is stored as end-of-day local time so a NZ shop's "today" expiry
+// doesn't cut off mid-afternoon due to UTC midnight.
+function coerceSaleFields(fields) {
+  const salePrice = fields.sale_price !== '' && fields.sale_price != null
+    ? Number(fields.sale_price) : null
+  let saleEndsAt = fields.sale_ends_at || null
+  if (saleEndsAt && !saleEndsAt.includes('T')) {
+    saleEndsAt = `${saleEndsAt}T23:59:59`
+  }
+  return { ...fields, sale_price: salePrice, sale_ends_at: saleEndsAt }
+}
+
 export default function ShopProductsTab() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -60,7 +73,7 @@ export default function ShopProductsTab() {
     const { id, created_at, ...fields } = draft
     const { error: err } = await supabase
       .from('shop_products')
-      .update({ ...fields, price: Number(fields.price) || null })
+      .update(coerceSaleFields({ ...fields, price: Number(fields.price) || null }))
       .eq('id', expandedId)
     if (!err) { setExpandedId(null); load() }
     else setError(err.message)
@@ -71,7 +84,7 @@ export default function ShopProductsTab() {
     setSaving(true)
     const { error: err } = await supabase
       .from('shop_products')
-      .insert([{ ...addDraft, price: Number(addDraft.price) || null }])
+      .insert([coerceSaleFields({ ...addDraft, price: Number(addDraft.price) || null })])
     if (!err) { setAdding(false); setAddDraft(emptyProduct()); setScannerOpen(false); load() }
     else setError(err.message)
     setSaving(false)

@@ -335,6 +335,28 @@ describe('ShopProductsTab — sale fields in edit form', () => {
   })
 })
 
+describe('ShopProductsTab — sale field null coercion', () => {
+  it('saving with empty sale_price sends null to Supabase (not empty string)', async () => {
+    const user = userEvent.setup()
+    let updatePayload = null
+    supabase.from.mockImplementation(() => {
+      const chain = makeChain(PRODUCTS)
+      chain.update = vi.fn(payload => {
+        updatePayload = payload
+        return { eq: vi.fn().mockResolvedValue({ data: null, error: null }) }
+      })
+      return chain
+    })
+    render(<ShopProductsTab />)
+    await waitFor(() => screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByText('Yonex Astrox 99'))
+    await user.click(screen.getByRole('button', { name: /^save$/i }))
+    await waitFor(() => expect(updatePayload).not.toBeNull())
+    expect(updatePayload.sale_price).toBeNull()
+    expect(updatePayload.sale_ends_at).toBeNull()
+  })
+})
+
 // ── Slice 9: "On Sale" filter tab ────────────────────────────────────────────
 
 const PRODUCTS_WITH_SALE = [

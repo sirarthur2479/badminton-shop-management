@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { supabase, isConfigured } from '../../supabaseClient'
 import Button from '../shared/Button'
+import ShopProductsTab from './ShopProductsTab'
 
 const TABS = [
   { key: 'racket_brands', label: 'Racket Brands', parentKey: null },
   { key: 'racket_models', label: 'Racket Models', parentKey: 'racket_brands', parentLabel: 'Brand', fkField: 'brand_id' },
   { key: 'string_brands', label: 'String Brands', parentKey: null },
   { key: 'string_models', label: 'String Models', parentKey: 'string_brands', parentLabel: 'Brand', fkField: 'brand_id' },
+  { key: 'shop', label: 'Shop Products', parentKey: null },
 ]
 
 export default function InventoryManager({ onBack }) {
@@ -45,7 +47,7 @@ export default function InventoryManager({ onBack }) {
       </div>
 
       <div className="flex-1 px-4 py-6 max-w-3xl mx-auto w-full">
-        <TableEditor tab={tab} />
+        {activeTab === 'shop' ? <ShopProductsTab /> : <TableEditor tab={tab} />}
       </div>
     </div>
   )

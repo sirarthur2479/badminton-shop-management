@@ -127,4 +127,26 @@ describe('InquirySheet — contact form + submit', () => {
     expect(await screen.findByText(/inquiry sent/i)).toBeInTheDocument()
     expect(screen.getByText(/inq-001/)).toBeInTheDocument()
   })
+
+  it('DB insert failure surfaces an error message and does not show success', async () => {
+    supabase.from.mockReturnValue({
+      insert: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
+      single: vi.fn().mockReturnThis(),
+      then: (res) => Promise.resolve({ data: null, error: { message: 'DB error' } }).then(res),
+    })
+    const user = await openSheetWithItem()
+    await user.type(screen.getByPlaceholderText(/your name/i), 'Alice')
+    await user.type(screen.getByPlaceholderText(/phone/i), '021000000')
+    await user.click(screen.getByRole('button', { name: /send inquiry/i }))
+    expect(await screen.findByText(/DB error/i)).toBeInTheDocument()
+    expect(screen.queryByText(/inquiry sent/i)).not.toBeInTheDocument()
+  })
+
+  it('empty cart does not show the contact form', async () => {
+    const user = userEvent.setup()
+    render(wrapWithItems([]))
+    await user.click(screen.getByTestId('open-sheet'))
+    expect(screen.queryByRole('button', { name: /send inquiry/i })).not.toBeInTheDocument()
+  })
 })

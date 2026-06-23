@@ -4,7 +4,7 @@ import { useInquiry } from '../../contexts/InquiryContext'
 import { supabase } from '../../supabaseClient'
 
 export default function InquirySheet({ open, onClose }) {
-  const { items, removeItem, clear } = useInquiry()
+  const { items, removeItem, updateQty, clear } = useInquiry()
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -23,7 +23,7 @@ export default function InquirySheet({ open, onClose }) {
       .select()
       .single()
     if (dbError) { setError(dbError.message); return }
-    supabase.functions.invoke('send-shop-inquiry', { body: { inquiry: data } })
+    supabase.functions.invoke('send-shop-inquiry', { body: { inquiry: data } }).catch(() => {})
     clear()
     setSubmittedId(data.id)
   }
@@ -57,20 +57,29 @@ export default function InquirySheet({ open, onClose }) {
                   <li key={item.id} className="flex items-center justify-between py-3 gap-2">
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
-                      <p className="text-xs text-gray-500">${item.price?.toFixed(2)} × {item.qty}</p>
+                      <p className="text-xs text-gray-500">${item.price?.toFixed(2)}</p>
                     </div>
-                    <button
-                      aria-label="Remove"
-                      onClick={() => removeItem(item.id)}
-                      className="text-gray-400 hover:text-red-500 text-xs px-2 py-1 rounded transition-colors">
-                      Remove
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button aria-label="Decrease quantity"
+                        onClick={() => updateQty(item.id, item.qty - 1)}
+                        className="w-6 h-6 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 text-sm flex items-center justify-center">−</button>
+                      <span className="text-sm w-5 text-center">{item.qty}</span>
+                      <button aria-label="Increase quantity"
+                        onClick={() => updateQty(item.id, item.qty + 1)}
+                        className="w-6 h-6 rounded border border-gray-300 text-gray-600 hover:bg-gray-100 text-sm flex items-center justify-center">+</button>
+                      <button
+                        aria-label="Remove"
+                        onClick={() => removeItem(item.id)}
+                        className="ml-1 text-gray-400 hover:text-red-500 text-xs px-2 py-1 rounded transition-colors">
+                        Remove
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
             )}
 
-            <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
+            {items.length > 0 && <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
               <input
                 placeholder="Your name *"
                 value={name}
@@ -102,7 +111,7 @@ export default function InquirySheet({ open, onClose }) {
                 className="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition-colors">
                 Send Inquiry
               </button>
-            </form>
+            </form>}
           </>
         )}
       </SheetContent>

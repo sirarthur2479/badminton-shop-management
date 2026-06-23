@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
 const noop = () => {}
-const InquiryContext = createContext({ items: [], addItem: noop, removeItem: noop, clear: noop })
+const InquiryContext = createContext({ items: [], addItem: noop, removeItem: noop, updateQty: noop, clear: noop })
 
 function loadFromStorage() {
   try {
@@ -33,12 +33,17 @@ export function InquiryProvider({ children }) {
     setItems(prev => prev.filter(i => i.id !== id))
   }
 
+  function updateQty(id, qty) {
+    if (qty < 1) { removeItem(id); return }
+    setItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i))
+  }
+
   function clear() {
     setItems([])
   }
 
   return (
-    <InquiryContext.Provider value={{ items, addItem, removeItem, clear }}>
+    <InquiryContext.Provider value={{ items, addItem, removeItem, updateQty, clear }}>
       {children}
     </InquiryContext.Provider>
   )

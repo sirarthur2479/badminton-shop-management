@@ -1,5 +1,7 @@
 # Badminton Pro Shop — Project Plan
 
+PROJECT_TYPE: js-webapp
+
 ## Problem We're Solving
 
 Auckland badminton pro shops have a recurring operational pain point:
@@ -333,3 +335,34 @@ The app uses `HashRouter` so routes are `/#/` and `/#/staff`. This works on all 
 - **Client-side PIN gate**: Simple enough for a single-location shop. For multi-staff or auditing needs, replace with Supabase Auth.
 - **No TypeScript**: Kept plain JSX for simplicity and easier on-the-fly edits.
 - **Cascading dropdowns**: Brand selection filters model list — prevents typos and keeps data clean.
+
+---
+
+## Development Workflow
+
+This project uses the dev-workflow harness (skills globally installed at `~/.claude/skills/`).
+
+**Skill chain:** `/intake` → `/research <domain>` → `/plan <slug>` → `/tdd <task-id>`
+
+| Command | When to use |
+|---|---|
+| `/intake` | Pull next idea from `ideas/pool.md` through research → plan → TDD automatically |
+| `/research <domain>` | Investigate a domain before writing code (run by `/intake` automatically) |
+| `/plan <slug>` | Convert a use-case + research into ordered backlog tasks |
+| `/tdd <task-id>` | Implement one task with RED → GREEN → REFACTOR discipline |
+| `/next` | Recommend next highest-priority item when unsure what to work on |
+| `/audit` | Verify docs still match code (run after a use-case completes) |
+
+**Test framework:** vitest (add `"test": "vitest"` to package.json scripts when first task requires tests)
+
+**Directory layout:**
+```
+ideas/
+  pool.md               ← free-form idea dump; run /intake to act on one
+  use-cases/            ← structured use-cases (created by /intake)
+research/               ← prior art docs by domain (created by /research)
+backlog/
+  tasks/                ← TASK-NNN-slug.md files (created by /plan)
+  done/                 ← archived completed tasks
+UPDATES.md              ← task completion log (created by /tdd on first completion)
+```

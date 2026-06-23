@@ -40,6 +40,31 @@ describe('parseCSV', () => {
     expect(rows[0].price).toBe('')
     expect(rows[0].category).toBe('')
   })
+
+  it('handles Windows \\r\\n line endings without corrupting last column', () => {
+    const csv = 'name,price,category\r\nAstrox 99,299,racket\r\nBG80,22,string'
+    const rows = parseCSV(csv)
+    expect(rows[0].category).toBe('racket')
+    expect(rows[1].category).toBe('string')
+    expect(rows[0].name).toBe('Astrox 99')
+  })
+
+  it('handles quoted fields containing commas', () => {
+    const csv = 'name,price\n"Shuttle, Indoor",15\n"Grip, 3-pack",12'
+    const rows = parseCSV(csv)
+    expect(rows).toHaveLength(2)
+    expect(rows[0].name).toBe('Shuttle, Indoor')
+    expect(rows[0].price).toBe('15')
+    expect(rows[1].name).toBe('Grip, 3-pack')
+  })
+})
+
+// ── mapRow edge cases ─────────────────────────────────────────────────────────
+
+describe('mapRow — edge cases', () => {
+  it('preserves price of 0 as 0 (not null)', () => {
+    expect(mapRow({ name: 'Free Sample', price: '0' }).price).toBe(0)
+  })
 })
 
 // ── mapRow ────────────────────────────────────────────────────────────────────

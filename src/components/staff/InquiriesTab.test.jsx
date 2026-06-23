@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import InquiriesTab from './InquiriesTab'
 
 const INQUIRIES = [
@@ -90,5 +90,67 @@ describe('InquiriesTab — inquiry list', () => {
   it('renders contact: email when phone is null', async () => {
     render(<InquiriesTab />)
     await waitFor(() => expect(screen.getByText('bob@example.com')).toBeInTheDocument())
+  })
+})
+
+describe('InquiriesTab — click-to-expand', () => {
+  it('clicking a row expands the item list', async () => {
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    expect(screen.getByTestId('inquiry-expanded-inq-1')).toBeInTheDocument()
+    expect(screen.getByText(/Yonex Astrox 99/)).toBeInTheDocument()
+    expect(screen.getByText(/BG80 String/)).toBeInTheDocument()
+  })
+
+  it('expanded row shows customer message', async () => {
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    expect(screen.getByText(/Do you have the white version/)).toBeInTheDocument()
+  })
+
+  it('clicking same row again collapses it', async () => {
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    expect(screen.queryByTestId('inquiry-expanded-inq-1')).not.toBeInTheDocument()
+  })
+})
+
+describe('InquiriesTab — status actions', () => {
+  it('"Mark Replied" calls supabase update with status replied', async () => {
+    const mockUpdate = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) })
+    mockFrom.mockReturnValue({ select: mockSelect, update: mockUpdate })
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    fireEvent.click(screen.getByRole('button', { name: /mark replied/i }))
+    expect(mockUpdate).toHaveBeenCalledWith({ status: 'replied' })
+  })
+
+  it('"Mark Closed" calls supabase update with status closed', async () => {
+    const mockUpdate = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) })
+    mockFrom.mockReturnValue({ select: mockSelect, update: mockUpdate })
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    fireEvent.click(screen.getByRole('button', { name: /mark closed/i }))
+    expect(mockUpdate).toHaveBeenCalledWith({ status: 'closed' })
+  })
+
+  it('after Mark Replied the status badge updates to Replied', async () => {
+    const mockEq = vi.fn().mockResolvedValue({ error: null })
+    const mockUpdate = vi.fn().mockReturnValue({ eq: mockEq })
+    mockFrom.mockReturnValue({ select: mockSelect, update: mockUpdate })
+    render(<InquiriesTab />)
+    await waitFor(() => screen.getByText('Alice Wong'))
+    fireEvent.click(screen.getByTestId('inquiry-row-inq-1'))
+    fireEvent.click(screen.getByRole('button', { name: /mark replied/i }))
+    await waitFor(() => {
+      const badges = screen.getAllByText('Replied')
+      expect(badges.length).toBeGreaterThanOrEqual(1)
+    })
   })
 })

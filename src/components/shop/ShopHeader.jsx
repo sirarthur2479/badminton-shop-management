@@ -44,7 +44,7 @@ export default function ShopHeader({ settings, onOpenInquiry }) {
           <button
             onClick={onOpenInquiry}
             className="relative bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            Inquiry
+            My List
             {count > 0 && (
               <span data-testid="inquiry-count"
                 className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">

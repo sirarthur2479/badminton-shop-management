@@ -38,7 +38,7 @@ export default function InquirySheet({ open, onClose }) {
     <Sheet open={open} onOpenChange={v => !v && handleClose()}>
       <SheetContent side="right" className="flex flex-col w-full sm:max-w-md overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Inquiry List</SheetTitle>
+          <SheetTitle>My List</SheetTitle>
         </SheetHeader>
 
         {submittedId ? (

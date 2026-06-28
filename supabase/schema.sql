@@ -81,7 +81,7 @@ create table if not exists shop_inquiries (
 create table if not exists shop_products (
   id           uuid primary key default gen_random_uuid(),
   created_at   timestamptz default now(),
-  name         text not null,
+  name         text not null unique,
   category     text not null check (category in ('racket','string','shoe','bag','grip','shuttle','other')),
   price        numeric(10,2),
   sale_price   numeric(10,2),
@@ -123,7 +123,12 @@ insert into shop_products (name, category, price, sale_price, description, image
   ('Victor Comfortable Grip',     'grip',       8.00,  null, 'Absorbent grip tape suitable for all racket types.',                   'https://www.badmintonwarehouse.com/cdn/shop/files/victor_soft_grip_all_colors_718x700.png?v=1770042306',                                                      true),
   ('Yonex Mavis 350 6-pack',      'shuttle',   32.00,  null, 'Nylon shuttlecock, medium speed. Ideal for recreational play.',        'https://www.badmintonwarehouse.com/cdn/shop/products/yonex-mavis-350-nylon-shuttlecocks-white-medium-speed-1_700x700.jpg?v=1579725905',                       true),
   ('Yonex SHB65Z Shoes',          'shoe',     189.00, 159.00,'Lightweight court shoe with non-marking carbon-fibre outsole.',        'https://www.badmintonwarehouse.com/cdn/shop/products/Yonex_65Z_Mens_BlackRed_-_1_1139x700.jpg?v=1579725959',                                                  true),
-  ('Victor SH-A960 Shoes',        'shoe',     159.00,  null, 'Durable badminton shoe with reinforced toe cap.',                      'https://oregonbadminton.com/cdn/shop/products/Victor960CQ3_1024x1024@2x.jpg?v=1546200402',                                                                    true);
+  ('Victor SH-A960 Shoes',        'shoe',     159.00,  null, 'Durable badminton shoe with reinforced toe cap.',                      'https://oregonbadminton.com/cdn/shop/products/Victor960CQ3_1024x1024@2x.jpg?v=1546200402',                                                                    true)
+on conflict (name) do update set
+  image_url  = excluded.image_url,
+  price      = excluded.price,
+  sale_price = excluded.sale_price,
+  description = excluded.description;
 
 
 -- Seed data: common brands

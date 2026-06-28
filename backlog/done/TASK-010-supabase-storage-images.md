@@ -5,7 +5,7 @@
 **Depends on:** TASK-005
 **Effort:** M
 **Risk:** medium
-**Status:** in-progress
+**Status:** done
 
 ## Goal
 

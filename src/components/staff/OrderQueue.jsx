@@ -295,6 +295,8 @@ export default function OrderQueue({ onBack }) {
   const [togglingPaidId, setTogglingPaidId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
+  const [statusFilter, setStatusFilter] = useState('all')
+
   const [expandedId, setExpandedId] = useState(null)
   const [editDraft, setEditDraft] = useState({})
   const [savingEdit, setSavingEdit] = useState(false)
@@ -315,9 +317,18 @@ export default function OrderQueue({ onBack }) {
 
   useEffect(() => { fetchOrders() }, [fetchOrders])
 
+  const statusCounts = useMemo(() => {
+    const counts = {}
+    orders.forEach(o => { counts[o.status] = (counts[o.status] || 0) + 1 })
+    return counts
+  }, [orders])
+
   const filteredOrders = useMemo(
-    () => orders.filter(o => matchesSearch(o, searchQuery)),
-    [orders, searchQuery]
+    () => orders.filter(o =>
+      matchesSearch(o, searchQuery) &&
+      (statusFilter === 'all' || o.status === statusFilter)
+    ),
+    [orders, searchQuery, statusFilter]
   )
 
   function toggleExpanded(id) {
@@ -477,6 +488,40 @@ export default function OrderQueue({ onBack }) {
               : `${filteredOrders.length} order${filteredOrders.length === 1 ? '' : 's'} found`}
           </p>
         )}
+      </div>
+
+      {/* Status filter tabs */}
+      <div className="bg-white border-b border-gray-100 px-4 py-2">
+        <div className="max-w-5xl mx-auto flex gap-2 overflow-x-auto pb-0.5">
+          {[
+            { key: 'all',         label: 'All' },
+            { key: 'pending',     label: 'Pending' },
+            { key: 'in_progress', label: 'In Progress' },
+            { key: 'done',        label: 'Done' },
+            { key: 'picked_up',   label: 'Picked Up' },
+          ].map(f => {
+            const count = f.key === 'all' ? orders.length : (statusCounts[f.key] || 0)
+            const active = statusFilter === f.key
+            return (
+              <button
+                key={f.key}
+                onClick={() => setStatusFilter(f.key)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                  active ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {f.label}
+                {count > 0 && (
+                  <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${
+                    active ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-500'
+                  }`}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <main className="flex-1 px-4 py-6 max-w-5xl mx-auto w-full">

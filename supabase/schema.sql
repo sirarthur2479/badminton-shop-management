@@ -2,14 +2,14 @@
 create extension if not exists "uuid-ossp";
 
 -- Racket brands (Yonex, Victor, Li-Ning, Babolat...)
-create table racket_brands (
+create table if not exists racket_brands (
   id uuid primary key default uuid_generate_v4(),
   name text not null unique,
   created_at timestamptz default now()
 );
 
 -- Racket models per brand
-create table racket_models (
+create table if not exists racket_models (
   id uuid primary key default uuid_generate_v4(),
   brand_id uuid not null references racket_brands(id) on delete cascade,
   name text not null,
@@ -20,14 +20,14 @@ create table racket_models (
 );
 
 -- String brands
-create table string_brands (
+create table if not exists string_brands (
   id uuid primary key default uuid_generate_v4(),
   name text not null unique,
   created_at timestamptz default now()
 );
 
 -- String models per brand, with tension guidance
-create table string_models (
+create table if not exists string_models (
   id uuid primary key default uuid_generate_v4(),
   brand_id uuid not null references string_brands(id) on delete cascade,
   name text not null,
@@ -40,7 +40,7 @@ create table string_models (
 );
 
 -- Stringing orders placed by customers at the kiosk
-create table stringing_orders (
+create table if not exists stringing_orders (
   id uuid primary key default uuid_generate_v4(),
   created_at timestamptz default now(),
   customer_name text not null,
@@ -63,6 +63,19 @@ create table stringing_orders (
 
 -- If adding to an existing database, run this instead of recreating the table:
 -- alter table stringing_orders add column if not exists paid boolean not null default false;
+
+-- ─── shop_inquiries ───────────────────────────────────────────────────────────
+create table if not exists shop_inquiries (
+  id             uuid primary key default gen_random_uuid(),
+  created_at     timestamptz default now(),
+  customer_name  text not null,
+  customer_phone text,
+  customer_email text,
+  items          jsonb not null default '[]',
+  message        text,
+  status         text not null default 'new'
+    check (status in ('new', 'replied', 'closed'))
+);
 
 -- ─── shop_products ────────────────────────────────────────────────────────────
 create table if not exists shop_products (
@@ -91,7 +104,8 @@ create table if not exists shop_settings (
 
 -- ── Shop settings seed ────────────────────────────────────────────────────────
 insert into shop_settings (shop_name, tagline, accent_colour)
-values ('Badminton Pro Shop', 'Your local badminton specialist', 'green');
+select 'Badminton Pro Shop', 'Your local badminton specialist', 'green'
+where not exists (select 1 from shop_settings);
 
 -- ── Shop products seed ────────────────────────────────────────────────────────
 insert into shop_products (name, category, price, sale_price, description, visible) values

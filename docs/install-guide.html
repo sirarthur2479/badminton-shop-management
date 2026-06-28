@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Installation Guide — Badminton Pro Shop</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#1A1F2E;--surface:#242938;--surface-2:#2E3548;
+  --text:#F0EDE6;--muted:#8B90A0;
+  --accent:#7EC8A4;--accent-dim:rgba(126,200,164,0.12);
+  --amber:#D4A843;--amber-dim:rgba(212,168,67,0.13);
+  --danger:#E07070;--border:#2E3548;--sidebar:220px;--r:6px;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--ground);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+
+.page-header{
+  background:
+    repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    repeating-linear-gradient(-45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    var(--ground);
+  border-bottom:1px solid var(--border);padding:48px 48px 40px;
+}
+.doc-pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(126,200,164,.4);border-radius:100px;padding:3px 12px;margin-bottom:20px}
+.page-header h1{font-size:2.4rem;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+.page-header p{color:var(--muted);font-size:1rem;max-width:540px}
+
+.layout{display:flex;flex:1}
+nav.sidebar{width:var(--sidebar);flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--border);padding:28px 0;display:flex;flex-direction:column;gap:2px}
+nav.sidebar .nav-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 20px 4px;margin-top:4px}
+nav.sidebar a{display:block;padding:7px 20px;font-size:.875rem;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s}
+nav.sidebar a:hover,nav.sidebar a.active{color:var(--text);border-left-color:var(--accent);background:var(--accent-dim)}
+
+main{flex:1;padding:48px;max-width:780px}
+.section{margin-bottom:64px;scroll-margin-top:32px}
+.section h2{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.section h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.section h3{font-size:.9375rem;font-weight:700;margin:24px 0 10px;letter-spacing:-.01em}
+.section p{color:var(--muted);margin-bottom:12px;font-size:.9375rem;line-height:1.65}
+.section p strong{color:var(--text);font-weight:600}
+
+.step{display:flex;gap:18px;margin-bottom:20px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(126,200,164,.3);color:var(--accent);font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-content{flex:1}
+.step-content h4{font-size:.9375rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-content p{font-size:.875rem;color:var(--muted);margin-bottom:0;line-height:1.6}
+
+pre,code{font-family:'Courier New',Courier,monospace}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;overflow-x:auto;margin:14px 0;font-size:.825rem;color:var(--accent);line-height:1.75}
+code{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:.8rem;color:var(--accent)}
+pre code{background:none;border:none;padding:0;font-size:inherit}
+
+.callout{border-radius:var(--r);padding:14px 18px;margin:16px 0;border-left:3px solid;font-size:.875rem;line-height:1.6}
+.callout-tip{background:var(--accent-dim);border-color:var(--accent);color:#B8E6D0}
+.callout-warn{background:var(--amber-dim);border-color:var(--amber);color:#E8D4A0}
+.callout-info{background:rgba(100,140,200,0.1);border-color:#648CC8;color:#A8C0E8}
+.callout strong{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;opacity:.7}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.875rem}
+th{text-align:left;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--border)}
+td{padding:11px 12px;border-bottom:1px solid var(--surface-2);color:var(--muted);vertical-align:top}
+td:first-child{color:var(--text);font-weight:500}
+tr:last-child td{border-bottom:none}
+
+.env-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin:14px 0}
+.env-header{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.env-row{display:grid;grid-template-columns:200px 1fr;gap:0;border-bottom:1px solid var(--surface-2)}
+.env-row:last-child{border-bottom:none}
+.env-key{padding:10px 16px;font-family:'Courier New',monospace;font-size:.825rem;color:var(--accent);background:rgba(126,200,164,.05);border-right:1px solid var(--surface-2)}
+.env-val{padding:10px 16px;font-size:.825rem;color:var(--muted)}
+
+.option-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px}
+.option-card h4{font-size:.9375rem;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.option-badge{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:100px;background:var(--accent-dim);color:var(--accent)}
+.option-card p{font-size:.875rem;color:var(--muted);margin:0}
+</style>
+</head>
+<body>
+<header class="page-header">
+  <span class="doc-pill">Installation Guide</span>
+  <h1>Set Up from Scratch</h1>
+  <p>Everything you need to get the Badminton Pro Shop app running — from a blank Supabase project to a live iPad kiosk.</p>
+</header>
+
+<div class="layout">
+<nav class="sidebar" id="sidenav">
+  <span class="nav-label">Setup</span>
+  <a href="#prerequisites">Prerequisites</a>
+  <a href="#supabase">Supabase project</a>
+  <a href="#env">Environment variables</a>
+  <a href="#local">Run locally</a>
+  <span class="nav-label">Deploy</span>
+  <a href="#deploy">Deployment options</a>
+  <a href="#ipad">iPad kiosk setup</a>
+  <span class="nav-label">Extras</span>
+  <a href="#email">Email notifications</a>
+</nav>
+
+<main>
+
+<section class="section" id="prerequisites">
+  <h2><span class="dot"></span>Prerequisites</h2>
+  <p>You'll need these before starting:</p>
+  <table>
+    <thead><tr><th>Tool</th><th>Purpose</th><th>Get it</th></tr></thead>
+    <tbody>
+      <tr><td>Node.js 18+</td><td>Runs the build toolchain</td><td><code>node.org</code></td></tr>
+      <tr><td>npm</td><td>Installs packages (comes with Node)</td><td>—</td></tr>
+      <tr><td>Git</td><td>Version control + GitHub Actions deploy</td><td><code>git-scm.com</code></td></tr>
+      <tr><td>Supabase account</td><td>Database + API + storage + edge functions</td><td>supabase.com (free)</td></tr>
+      <tr><td>Resend account (optional)</td><td>Transactional email</td><td>resend.com (free tier: 3000/month)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="supabase">
+  <h2><span class="dot"></span>Supabase Project</h2>
+  <div class="step"><span class="step-num">1</span><div class="step-content"><h4>Create a new project</h4><p>Go to supabase.com → New project. Choose a region closest to New Zealand (Sydney or Singapore). Set a strong database password and save it.</p></div></div>
+  <div class="step"><span class="step-num">2</span><div class="step-content"><h4>Run the schema</h4><p>In the Supabase dashboard → SQL Editor → paste the entire contents of <code>supabase/schema.sql</code> → Run. This creates all tables and seeds the default catalog (Yonex, Victor, BG80, Aerobite, etc.).</p></div></div>
+  <div class="step"><span class="step-num">3</span><div class="step-content"><h4>Create the storage bucket</h4><p>Go to Storage → New bucket → name it <code>product-images</code> → set to <strong>Public</strong>. This is where product photos are uploaded from the staff panel.</p></div></div>
+  <div class="step"><span class="step-num">4</span><div class="step-content"><h4>Copy your API credentials</h4><p>Go to Settings → API. You'll need the <strong>Project URL</strong> and the <strong>anon/public key</strong> for the next step.</p></div></div>
+  <div class="callout callout-warn">
+    <strong>Do not commit credentials</strong>
+    The anon key has public-level access. It's safe to use client-side (it's designed for that) but keep it out of version control. The <code>.env</code> file is gitignored — never remove that gitignore entry.
+  </div>
+</section>
+
+<section class="section" id="env">
+  <h2><span class="dot"></span>Environment Variables</h2>
+  <p>Copy <code>.env.example</code> to <code>.env</code> and fill in your values:</p>
+  <pre><code>cp .env.example .env</code></pre>
+  <div class="env-block">
+    <div class="env-header">.env</div>
+    <div class="env-row"><div class="env-key">VITE_SUPABASE_URL</div><div class="env-val">Your project URL — e.g. https://abcdefgh.supabase.co</div></div>
+    <div class="env-row"><div class="env-key">VITE_SUPABASE_ANON_KEY</div><div class="env-val">Your anon/public key from Supabase Settings → API</div></div>
+    <div class="env-row"><div class="env-key">VITE_STAFF_PIN</div><div class="env-val">4-digit PIN for staff access — use 1234 for demo</div></div>
+  </div>
+  <div class="callout callout-tip">
+    <strong>GitHub Actions secrets</strong>
+    If deploying via GitHub Pages, add these same three values as repository secrets (Settings → Secrets → Actions) rather than committing the .env file.
+  </div>
+</section>
+
+<section class="section" id="local">
+  <h2><span class="dot"></span>Run Locally</h2>
+  <pre><code>npm install
+npm run dev</code></pre>
+  <p>The app starts at <code>http://localhost:5173</code>. Three routes:</p>
+  <table>
+    <thead><tr><th>Route</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>/#/</code></td><td>Customer kiosk — stringing order form</td></tr>
+      <tr><td><code>/#/shop</code></td><td>Public shop storefront — product grid + inquiry cart</td></tr>
+      <tr><td><code>/#/staff</code></td><td>Staff panel — PIN-gated order queue, inventory, inquiries, settings</td></tr>
+    </tbody>
+  </table>
+  <h3>Run the tests</h3>
+  <pre><code>npm test</code></pre>
+  <p>Runs the vitest suite — component tests for all major staff panel features.</p>
+  <h3>Build for production</h3>
+  <pre><code>npm run build</code></pre>
+  <p>Output goes to <code>dist/</code>. Check the build passes before deploying.</p>
+</section>
+
+<section class="section" id="deploy">
+  <h2><span class="dot"></span>Deployment Options</h2>
+  <p>Three options depending on whether the GitHub repo is public or private:</p>
+
+  <div class="option-card">
+    <h4>GitHub Pages <span class="option-badge">simplest</span></h4>
+    <p>Requires a <strong>public</strong> repository. The workflow file is already in <code>.github/workflows/deploy.yml</code>. Enable GitHub Pages in repo Settings → Pages → Source → GitHub Actions, then add the three env vars as repository secrets. Every push to main deploys automatically. Live URL: <code>https://&lt;username&gt;.github.io/badminton-shop-management/</code></p>
+  </div>
+
+  <div class="option-card">
+    <h4>Netlify <span class="option-badge">private repo ok</span></h4>
+    <p>Connect your repo at netlify.com. Build command: <code>npm run build</code>. Publish directory: <code>dist</code>. Add the 3 env vars in Site settings → Environment variables. Auto-deploys on push — no workflow file needed.</p>
+  </div>
+
+  <div class="option-card">
+    <h4>Vercel <span class="option-badge">private repo ok</span></h4>
+    <p>Connect your repo at vercel.com. Vercel detects Vite automatically — zero config. Add the 3 env vars in Project settings → Environment Variables. Done.</p>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>Routing note</strong>
+    The app uses HashRouter, so all routes use <code>/#/</code> — no server-side redirect rules needed on any of these platforms.
+  </div>
+</section>
+
+<section class="section" id="ipad">
+  <h2><span class="dot"></span>iPad Kiosk Setup</h2>
+  <div class="step"><span class="step-num">1</span><div class="step-content"><h4>Open the app in Safari</h4><p>Navigate to your deployed URL (GitHub Pages, Netlify, or Vercel). Safari is required — Chrome on iOS does not support "Add to Home Screen" as a PWA.</p></div></div>
+  <div class="step"><span class="step-num">2</span><div class="step-content"><h4>Add to Home Screen</h4><p>Tap the Share icon (box with arrow) → "Add to Home Screen" → Add. The app installs with its icon and opens fullscreen, with no browser chrome.</p></div></div>
+  <div class="step"><span class="step-num">3</span><div class="step-content"><h4>Enable Guided Access</h4><p>Settings → Accessibility → Guided Access → Enable. Open the app, triple-click the side button, tap Start. This locks the iPad to the kiosk app — customers can't exit to the home screen or navigate elsewhere.</p></div></div>
+  <div class="step"><span class="step-num">4</span><div class="step-content"><h4>Position the iPad</h4><p>Mount horizontally or vertically at a comfortable counter height. The form is designed for touch input — all tap targets are minimum 44px.</p></div></div>
+  <div class="callout callout-warn">
+    <strong>Auto-lock</strong>
+    Set Display & Brightness → Auto-Lock to "Never" while the kiosk is in use, or customers will find a locked screen mid-form. Re-enable it at end of day.
+  </div>
+</section>
+
+<section class="section" id="email">
+  <h2><span class="dot"></span>Email Notifications</h2>
+  <p>Email is handled by a Supabase Edge Function (<code>supabase/functions/send-order-notification/</code>) powered by Resend. This is optional — the app works fully without it.</p>
+
+  <h3>When emails send</h3>
+  <table>
+    <thead><tr><th>Trigger</th><th>Recipient</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Customer submits stringing order</td><td>Customer (if email given)</td><td>Order confirmed — racket, string, tension, order ID</td></tr>
+      <tr><td>Staff marks order as Done</td><td>Customer (if email given)</td><td>Racket ready for pickup</td></tr>
+      <tr><td>Customer submits shop inquiry</td><td>Shop owner (configured)</td><td>New inquiry with item list and contact details</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Deploy the edge function</h3>
+  <p>You'll need the <a href="https://supabase.com/docs/guides/cli" style="color:var(--accent)">Supabase CLI</a> installed:</p>
+  <pre><code>supabase login
+supabase link --project-ref YOUR_PROJECT_REF
+supabase functions deploy send-order-notification</code></pre>
+
+  <h3>Set the secrets</h3>
+  <pre><code>supabase secrets set \
+  RESEND_API_KEY=re_xxxxxxxxxxxx \
+  FROM_EMAIL=noreply@yourshop.co.nz \
+  SHOP_NAME="Badminton Pro Shop"</code></pre>
+
+  <div class="callout callout-tip">
+    <strong>Testing without a verified domain</strong>
+    Use <code>onboarding@resend.dev</code> as FROM_EMAIL during testing — Resend allows this on the free plan without domain verification. Switch to your own domain before going live.
+  </div>
+  <div class="callout callout-tip">
+    <strong>Email failures are silent</strong>
+    If the edge function fails (network error, wrong API key), the order still saves and the user sees success. Email is fire-and-forget — it never blocks the order flow.
+  </div>
+</section>
+
+</main>
+</div>
+<script>
+const links=document.querySelectorAll('nav.sidebar a');
+const sections=document.querySelectorAll('.section');
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const a=document.querySelector('nav.sidebar a[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{threshold:0.3});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

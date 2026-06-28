@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Guide — Badminton Pro Shop</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#1A1F2E;--surface:#242938;--surface-2:#2E3548;
+  --text:#F0EDE6;--muted:#8B90A0;
+  --accent:#7EC8A4;--accent-dim:rgba(126,200,164,0.12);
+  --amber:#D4A843;--amber-dim:rgba(212,168,67,0.13);
+  --border:#2E3548;--sidebar:220px;--r:6px;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--ground);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+
+.page-header{
+  background:
+    repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    repeating-linear-gradient(-45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    var(--ground);
+  border-bottom:1px solid var(--border);padding:48px 48px 40px;
+}
+.doc-pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(126,200,164,.4);border-radius:100px;padding:3px 12px;margin-bottom:20px}
+.page-header h1{font-size:2.4rem;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+.page-header p{color:var(--muted);font-size:1rem;max-width:540px}
+
+.layout{display:flex;flex:1}
+nav.sidebar{width:var(--sidebar);flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--border);padding:28px 0;display:flex;flex-direction:column;gap:2px}
+nav.sidebar .nav-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 20px 4px;margin-top:4px}
+nav.sidebar a{display:block;padding:7px 20px;font-size:.875rem;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s}
+nav.sidebar a:hover,nav.sidebar a.active{color:var(--text);border-left-color:var(--accent);background:var(--accent-dim)}
+
+main{flex:1;padding:48px;max-width:760px}
+.section{margin-bottom:64px;scroll-margin-top:32px}
+.section h2{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.section h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.section h3{font-size:.9375rem;font-weight:700;margin:24px 0 10px;letter-spacing:-.01em}
+.section p{color:var(--muted);margin-bottom:12px;font-size:.9375rem;line-height:1.65}
+.section p strong{color:var(--text);font-weight:600}
+
+/* Large visual steps for customer guide — friendlier */
+.big-step{display:flex;gap:24px;margin-bottom:32px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px}
+.big-num{width:40px;height:40px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(126,200,164,.35);color:var(--accent);font-size:.9rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.big-content h4{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.big-content p{font-size:.9rem;color:var(--muted);margin-bottom:0;line-height:1.65}
+
+code{background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:'Courier New',monospace;font-size:.8rem;color:var(--accent)}
+
+.callout{border-radius:var(--r);padding:14px 18px;margin:16px 0;border-left:3px solid;font-size:.875rem;line-height:1.6}
+.callout-tip{background:var(--accent-dim);border-color:var(--accent);color:#B8E6D0}
+.callout-warn{background:var(--amber-dim);border-color:var(--amber);color:#E8D4A0}
+.callout strong{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;opacity:.7}
+
+.faq{margin:8px 0}
+.faq-item{border-bottom:1px solid var(--surface-2);padding:16px 0}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-weight:700;color:var(--text);font-size:.9375rem;margin-bottom:6px}
+.faq-a{font-size:.875rem;color:var(--muted);line-height:1.65}
+
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.05em}
+.badge-new{background:rgba(212,168,67,0.2);color:var(--amber)}
+.badge-pending{background:rgba(212,168,67,0.15);color:var(--amber)}
+.badge-done{background:var(--accent-dim);color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="page-header">
+  <span class="doc-pill">Customer Guide</span>
+  <h1>Using the Shop</h1>
+  <p>How to register a stringing order on the kiosk, browse products online, and send an inquiry to the shop.</p>
+</header>
+
+<div class="layout">
+<nav class="sidebar" id="sidenav">
+  <span class="nav-label">Stringing Kiosk</span>
+  <a href="#kiosk-overview">Overview</a>
+  <a href="#kiosk-steps">Step by step</a>
+  <a href="#kiosk-confirm">Your order ID</a>
+  <span class="nav-label">Online Shop</span>
+  <a href="#shop-browse">Browse products</a>
+  <a href="#shop-inquiry">Send an inquiry</a>
+  <span class="nav-label">Help</span>
+  <a href="#email-notifications">Email updates</a>
+  <a href="#faq">FAQ</a>
+</nav>
+
+<main>
+
+<section class="section" id="kiosk-overview">
+  <h2><span class="dot"></span>Stringing Kiosk — Overview</h2>
+  <p>The iPad on the counter is a self-service kiosk. When you drop off a racket for restringing, you register the order yourself — no waiting for staff, no paper note to lose.</p>
+  <p>The form takes about <strong>60 seconds</strong>. You'll choose your racket, string, tension, and leave your contact details so the shop can notify you when it's ready.</p>
+  <div class="callout callout-tip">
+    <strong>Your racket, your specs</strong>
+    You control exactly what string and tension goes in your racket — there's no back-and-forth. If you're not sure what tension to pick, check the recommended range shown next to each string model.
+  </div>
+</section>
+
+<section class="section" id="kiosk-steps">
+  <h2><span class="dot"></span>Step by Step</h2>
+  <div class="big-step"><span class="big-num">1</span><div class="big-content"><h4>Select your racket</h4><p>Tap the <strong>Racket Brand</strong> dropdown and pick your brand (Yonex, Victor, Li-Ning, Babolat, or Carlton). Then pick your model from the list that appears. If your model isn't listed, mention it in the Notes field at the end.</p></div></div>
+  <div class="big-step"><span class="big-num">2</span><div class="big-content"><h4>Choose your string</h4><p>Select the <strong>String Brand</strong> and then the <strong>String Model</strong>. The model list shows the recommended tension range — e.g. BG80 is rated 19–30 lbs. Pick whatever suits your playing level and frame.</p></div></div>
+  <div class="big-step"><span class="big-num">3</span><div class="big-content"><h4>Set the tension</h4><p>Enter your preferred tension in pounds. The field won't accept a value outside the string's rated range — if it turns red, adjust up or down. Club players typically string 24–26 lbs; competitive players 28–30 lbs.</p></div></div>
+  <div class="big-step"><span class="big-num">4</span><div class="big-content"><h4>Enter your contact details</h4><p>Your name is required. Add a phone number, email, or both — at least one contact method is needed so the shop can reach you when the racket is done. If you add an email, you'll get an automatic notification.</p></div></div>
+  <div class="big-step"><span class="big-num">5</span><div class="big-content"><h4>Add any notes (optional)</h4><p>Use the Notes field for anything special: "handle has a crack near grip end", "please use the same tension as last time", "racket belongs to my daughter". The stringer reads this before starting.</p></div></div>
+  <div class="big-step"><span class="big-num">6</span><div class="big-content"><h4>Tap Submit</h4><p>Your order is registered instantly. The confirmation screen shows your <strong>Order ID</strong> — screenshot it or write it down. You'll use this number to identify your racket at pickup.</p></div></div>
+</section>
+
+<section class="section" id="kiosk-confirm">
+  <h2><span class="dot"></span>Your Order ID</h2>
+  <p>After submitting, you'll see a confirmation screen with a unique order ID. <strong>Keep this</strong> — it's how the shop tracks your racket in the system.</p>
+  <p>When you return to pick up your racket, give the order ID or your name and the shop can pull up the record immediately.</p>
+  <div class="callout callout-warn">
+    <strong>No printer on the kiosk</strong>
+    The kiosk doesn't print a receipt. Screenshot or photograph the confirmation screen before you leave, or the shop will look you up by name.
+  </div>
+</section>
+
+<section class="section" id="shop-browse">
+  <h2><span class="dot"></span>Browse the Online Shop</h2>
+  <p>The shop has a product page you can browse from your phone or any browser. It shows in-stock products with photos, prices, and any current sale items.</p>
+  <h3>Category tabs</h3>
+  <p>Products are organised into tabs: <strong>Racket</strong>, <strong>String</strong>, <strong>Grip</strong>, <strong>Shuttle</strong>, <strong>Bag</strong>, and <strong>Shoe</strong>. Tap a tab to filter by type, or stay on "All" to browse everything.</p>
+  <h3>Search</h3>
+  <p>Type in the search box at the top to find a specific product by name. Results filter as you type — search "Yonex" to see all Yonex products, or "BG80" to find that specific string.</p>
+  <h3>Sale items</h3>
+  <p>Products on sale show a <span class="badge badge-done">Sale</span> badge with the original price crossed out and the sale price highlighted. The "On Sale" tab shows only discounted items.</p>
+</section>
+
+<section class="section" id="shop-inquiry">
+  <h2><span class="dot"></span>Send an Inquiry</h2>
+  <p>If you're interested in one or more products — to check availability, ask about sizing, or get a price — you can send an inquiry directly from the shop page. It works like a shopping cart but instead of checking out, you're asking the shop a question.</p>
+
+  <div class="big-step"><span class="big-num">1</span><div class="big-content"><h4>Add items to your inquiry</h4><p>Tap <strong>"Add to Inquiry"</strong> on any product card. A badge appears in the top corner counting how many items you've added. Keep browsing and adding — you can include as many items as you like.</p></div></div>
+  <div class="big-step"><span class="big-num">2</span><div class="big-content"><h4>Open the inquiry sheet</h4><p>Tap the badge (or the cart icon) to open the inquiry panel. You'll see all your selected items with quantities. Tap + or − to adjust quantities, or the X to remove an item.</p></div></div>
+  <div class="big-step"><span class="big-num">3</span><div class="big-content"><h4>Add your message and contact</h4><p>Write a short message — "Do you have the Astrox 99 in the lighter version?" or "What's the best string for a beginner?". Add your name and at least one contact method (phone or email).</p></div></div>
+  <div class="big-step"><span class="big-num">4</span><div class="big-content"><h4>Send</h4><p>Tap Send Inquiry. The shop receives it immediately with your full item list and message. You'll get an inquiry ID on the confirmation screen — keep it for reference.</p></div></div>
+  <div class="callout callout-tip">
+    <strong>The shop will reply to you directly</strong>
+    Inquiry responses come via phone or email — whichever contact you provided. The shop typically replies within the same business day.
+  </div>
+</section>
+
+<section class="section" id="email-notifications">
+  <h2><span class="dot"></span>Email Updates</h2>
+  <p>If you provided your email address when registering a stringing order, you'll receive two automatic emails:</p>
+  <table>
+    <thead><tr><th>When</th><th>Email</th></tr></thead>
+    <tbody>
+      <tr><td>Order submitted</td><td>Confirmation with your order details — racket, string, tension, and order ID</td></tr>
+      <tr><td>Racket is ready</td><td>A "ready for pickup" notification so you don't have to ring ahead</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-tip">
+    <strong>Check your spam folder</strong>
+    If you don't see the confirmation email within a few minutes, check spam or junk. Add the shop's address to your contacts to prevent this next time.
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <h2><span class="dot"></span>FAQ</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q">My racket model isn't in the list. What do I do?</div>
+      <div class="faq-a">Select the closest brand, pick any model, and describe your actual racket in the Notes field. The stringer will see it and sort it out.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">I'm not sure what tension to use.</div>
+      <div class="faq-a">A general guide: beginners and casual players 22–24 lbs, club players 24–27 lbs, advanced/competitive players 27–30 lbs. When in doubt, go 24–25 lbs — it's forgiving and suits most recreational play.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">I didn't get a confirmation email.</div>
+      <div class="faq-a">Check your spam folder. If it's not there, the order still went through — your order ID on the confirmation screen is the definitive record. You can also call the shop and quote your name.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How long will my racket take?</div>
+      <div class="faq-a">Turnaround time depends on the shop's queue. You'll get an email when it's done. If you need it by a specific date, add that to the Notes field.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I change my order after submitting?</div>
+      <div class="faq-a">Contact the shop directly once you have your order ID — they can update the details if stringing hasn't started yet.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">My items disappeared from the inquiry cart.</div>
+      <div class="faq-a">The inquiry cart is saved in your browser. Closing the browser tab clears it. If this happens, simply add your items again — it only takes a moment.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+<script>
+const links=document.querySelectorAll('nav.sidebar a');
+const sections=document.querySelectorAll('.section');
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const a=document.querySelector('nav.sidebar a[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{threshold:0.3});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

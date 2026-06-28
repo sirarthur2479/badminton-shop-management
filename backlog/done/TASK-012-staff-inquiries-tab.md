@@ -5,7 +5,7 @@
 **Depends on:** TASK-011
 **Effort:** S
 **Risk:** low
-**Status:** todo
+**Status:** done
 
 ## Goal
 
@@ -13,15 +13,15 @@ Add an "Inquiries" tab to the staff panel showing all shop inquiries received fr
 
 ## Acceptance criteria
 
-- [ ] "Inquiries" tab visible in staff navigation
-- [ ] Table shows: date, customer name, contact (phone or email), item count, status badge
-- [ ] Status badges: New (yellow), Replied (blue), Closed (grey)
-- [ ] Clicking a row expands: full item list with quantities and prices, customer message, contact details
-- [ ] "Mark Replied" button on expanded row → sets status to 'replied'
-- [ ] "Mark Closed" button → sets status to 'closed'
-- [ ] New inquiries (status='new') are visually distinct (e.g. bold row, yellow left border)
-- [ ] Inquiry count badge on the "Inquiries" nav tab shows count of status='new' (clears when all are replied/closed)
-- [ ] `npm run build` passes
+- [x] "Inquiries" tab visible in staff navigation
+- [x] Table shows: date, customer name, contact (phone or email), item count, status badge
+- [x] Status badges: New (yellow), Replied (blue), Closed (grey)
+- [x] Clicking a row expands: full item list with quantities and prices, customer message, contact details
+- [x] "Mark Replied" button on expanded row → sets status to 'replied'
+- [x] "Mark Closed" button → sets status to 'closed'
+- [x] New inquiries (status='new') are visually distinct (e.g. bold row, yellow left border)
+- [x] Inquiry count badge on the "Inquiries" nav tab shows count of status='new' (clears when all are replied/closed)
+- [x] `npm run build` passes
 
 ## Test plan
 

@@ -5,33 +5,6 @@ No structure required. Run `/intake` when you're ready to act on something.
 
 ---
 
-## [2026-06-23] Set up vitest test framework
-No test runner is currently configured. Add vitest + @testing-library/react so the
-TDD skill has a working RED gate. Also add jsdom for component tests.
-Priority: do this first — it's a dependency for every TDD task.
-
----
-
-## [2026-06-23] Fix sticky Next/Submit button on mobile
-Button falls below fold on iPhone 14 Pro — user must scroll to tap it.
-Fix: `h-[100dvh]` container + scrollable field area so the button is always pinned
-visible without scrolling. Affects `StringingOrderForm.jsx`.
-
----
-
-## [2026-06-23] Add queue filter tabs
-All orders show in one flat list — `picked_up` orders pile up and make the active
-queue hard to scan. Add filter tabs: Pending / In Progress / Done / All.
-Affects `OrderQueue.jsx`.
-
----
-
-## [2026-06-23] NZD formatting and NZ date format
-Prices in inventory show no currency symbol. Dates display in US format (Jun 20, 01:23 PM).
-Fix: all prices → `NZD $X.XX`, all dates → `20 Jun, 1:23 pm` (NZ locale).
-
----
-
 ## [2026-06-23] Returning customer search
 No way to look up a prior order. Landing page should let customers search by name /
 phone / email and pre-populate racket + string + tension from their last visit.
@@ -70,3 +43,12 @@ a ticket to attach to the racket, matching the physical workflow shops use today
 Order queue only refreshes on manual button press. Subscribe to Supabase Realtime
 so new orders appear instantly on the staff view without polling.
 Affects `OrderQueue.jsx`.
+
+---
+
+## [2026-06-23] NZ legal compliance — privacy policy, data collection notices, unsubscribe
+This app collects personal data (name, phone, email) and sends transactional emails.
+Need to understand what NZ law actually requires: Privacy Act 2020, Fair Trading Act 1986,
+Unsolicited Electronic Messages Act 2007, Consumer Guarantees Act 1993.
+Research what website elements are legally required vs best-practice, then create a
+compliance doc and any missing UI elements (privacy notice, unsubscribe link in emails, etc.).

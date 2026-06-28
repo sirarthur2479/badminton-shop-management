@@ -189,7 +189,7 @@ function TableEditor({ tab }) {
                 {tab.fkField && <p className="text-sm text-gray-500">{parents.find(p => p.id === row[tab.fkField])?.name || '—'}</p>}
                 <div className="flex gap-4 text-sm text-gray-500">
                   {extraFields && <span>Stock: {row.stock_qty ?? 0}</span>}
-                  {extraFields && row.price && <span>Price: ${row.price}</span>}
+                  {extraFields && row.price && <span>NZD ${Number(row.price).toFixed(2)}</span>}
                   {isStringModel && row.tension_min_lbs && (
                     <span>Tension: {row.tension_min_lbs}–{row.tension_max_lbs} lbs</span>
                   )}

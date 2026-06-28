@@ -269,7 +269,7 @@ export default function StringingOrderForm({ onComplete }) {
       </div>
 
       {/* Step content — scrollable fields + pinned button */}
-      <div className="flex-1 min-h-0 px-6 pb-6">
+      <div className="flex-1 min-h-0 px-6" style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))' }}>
         <div key={step} className={`h-full flex flex-col ${slideDir === 'right' ? 'slide-in-right' : 'slide-in-left'}`}>
 
           {/* ── Step 1: Racket ── */}

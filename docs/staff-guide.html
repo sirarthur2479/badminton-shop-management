@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Guide — Badminton Pro Shop</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#1A1F2E;--surface:#242938;--surface-2:#2E3548;
+  --text:#F0EDE6;--muted:#8B90A0;
+  --accent:#7EC8A4;--accent-dim:rgba(126,200,164,0.12);
+  --amber:#D4A843;--amber-dim:rgba(212,168,67,0.13);
+  --border:#2E3548;--sidebar:220px;--r:6px;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--ground);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+
+.page-header{
+  background:
+    repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    repeating-linear-gradient(-45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    var(--ground);
+  border-bottom:1px solid var(--border);padding:48px 48px 40px;
+}
+.doc-pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(126,200,164,.4);border-radius:100px;padding:3px 12px;margin-bottom:20px}
+.page-header h1{font-size:2.4rem;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+.page-header p{color:var(--muted);font-size:1rem;max-width:540px}
+
+.layout{display:flex;flex:1}
+nav.sidebar{width:var(--sidebar);flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--border);padding:28px 0;display:flex;flex-direction:column;gap:2px}
+nav.sidebar .nav-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 20px 4px;margin-top:4px}
+nav.sidebar a{display:block;padding:7px 20px;font-size:.875rem;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s}
+nav.sidebar a:hover,nav.sidebar a.active{color:var(--text);border-left-color:var(--accent);background:var(--accent-dim)}
+
+main{flex:1;padding:48px;max-width:780px}
+.section{margin-bottom:64px;scroll-margin-top:32px}
+.section h2{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.section h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.section h3{font-size:.9375rem;font-weight:700;margin:24px 0 10px;letter-spacing:-.01em}
+.section p{color:var(--muted);margin-bottom:12px;font-size:.9375rem;line-height:1.65}
+.section p strong{color:var(--text);font-weight:600}
+
+.step{display:flex;gap:18px;margin-bottom:18px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(126,200,164,.3);color:var(--accent);font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-content{flex:1}
+.step-content h4{font-size:.9375rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-content p{font-size:.875rem;color:var(--muted);margin-bottom:0;line-height:1.6}
+
+code{background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:'Courier New',monospace;font-size:.8rem;color:var(--accent)}
+
+.callout{border-radius:var(--r);padding:14px 18px;margin:16px 0;border-left:3px solid;font-size:.875rem;line-height:1.6}
+.callout-tip{background:var(--accent-dim);border-color:var(--accent);color:#B8E6D0}
+.callout-warn{background:var(--amber-dim);border-color:var(--amber);color:#E8D4A0}
+.callout strong{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;opacity:.7}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.875rem}
+th{text-align:left;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--border)}
+td{padding:11px 12px;border-bottom:1px solid var(--surface-2);color:var(--muted);vertical-align:top}
+td:first-child{color:var(--text);font-weight:500}
+tr:last-child td{border-bottom:none}
+
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.05em;margin:0 2px}
+.badge-new{background:rgba(212,168,67,0.2);color:var(--amber)}
+.badge-replied{background:rgba(100,140,200,0.2);color:#648CC8}
+.badge-closed{background:var(--surface-2);color:var(--muted)}
+.badge-pending{background:rgba(212,168,67,0.15);color:var(--amber)}
+.badge-inprogress{background:rgba(100,140,200,0.15);color:#648CC8}
+.badge-done{background:var(--accent-dim);color:var(--accent)}
+.badge-pickedup{background:var(--surface-2);color:var(--muted)}
+
+/* Quick reference card */
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.ref-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.ref-card h4{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.ref-card ul{list-style:none}
+.ref-card li{font-size:.875rem;color:var(--text);padding:4px 0;border-bottom:1px solid var(--surface-2);display:flex;justify-content:space-between;align-items:center}
+.ref-card li:last-child{border-bottom:none}
+.ref-card li span{color:var(--muted);font-size:.8rem}
+
+.routine{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin:16px 0}
+.routine-title{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.routine-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--surface-2)}
+.routine-item:last-child{border-bottom:none}
+.routine-time{font-size:.75rem;font-weight:700;color:var(--amber);min-width:70px;padding-top:1px}
+.routine-desc{font-size:.875rem;color:var(--muted);line-height:1.5}
+.routine-desc strong{color:var(--text)}
+</style>
+</head>
+<body>
+<header class="page-header">
+  <span class="doc-pill">Staff Guide</span>
+  <h1>Day-to-Day Operations</h1>
+  <p>The practical guide for handling the order queue, updating statuses, and responding to customer inquiries from the staff panel.</p>
+</header>
+
+<div class="layout">
+<nav class="sidebar" id="sidenav">
+  <span class="nav-label">Getting In</span>
+  <a href="#login">PIN login</a>
+  <span class="nav-label">Daily Work</span>
+  <a href="#routine">Daily routine</a>
+  <a href="#order-queue">Working the queue</a>
+  <a href="#status-updates">Updating status</a>
+  <a href="#inquiries">Inquiries</a>
+  <span class="nav-label">Reference</span>
+  <a href="#quick-ref">Quick reference</a>
+</nav>
+
+<main>
+
+<section class="section" id="login">
+  <h2><span class="dot"></span>PIN Login</h2>
+  <p>Open the staff panel at <strong><code>/#/staff</code></strong>. You'll see a numeric keypad — enter the 4-digit PIN to get in.</p>
+  <div class="callout callout-tip">
+    <strong>Save it to your phone</strong>
+    Add <code>/#/staff</code> to your phone's home screen (iOS: Share → Add to Home Screen; Android: Chrome menu → Add to Home Screen). It opens straight to the PIN screen — no URL to type each time.
+  </div>
+  <p>The session stays unlocked until you tap <strong>Logout</strong> at the bottom of the dashboard, or close the browser. On a shared device, log out at the end of your shift.</p>
+</section>
+
+<section class="section" id="routine">
+  <h2><span class="dot"></span>Daily Routine</h2>
+  <p>A suggested order of operations for each working day:</p>
+  <div class="routine">
+    <div class="routine-title">Suggested daily flow</div>
+    <div class="routine-item"><div class="routine-time">Opening</div><div class="routine-desc"><strong>Check the Inquiries tile</strong> — if there's a red badge, open Inquiries and handle new ones before the queue gets busy.</div></div>
+    <div class="routine-item"><div class="routine-time">Morning</div><div class="routine-desc"><strong>Open the Order Queue.</strong> Any Pending orders should be moved to In Progress as you start them. Keep the queue status accurate — it's how the owner tracks what's being worked on remotely.</div></div>
+    <div class="routine-item"><div class="routine-time">Completion</div><div class="routine-desc"><strong>Mark orders as Done</strong> the moment you finish restringing. This triggers the customer's "ready for pickup" email automatically.</div></div>
+    <div class="routine-item"><div class="routine-time">Pickup</div><div class="routine-desc"><strong>Mark as Picked Up</strong> when the customer collects. This clears the job from the active queue.</div></div>
+    <div class="routine-item"><div class="routine-time">End of day</div><div class="routine-desc"><strong>Scan the queue</strong> for anything stuck in In Progress — if a job is stalled, move it back to Pending so it doesn't get lost overnight.</div></div>
+  </div>
+</section>
+
+<section class="section" id="order-queue">
+  <h2><span class="dot"></span>Working the Queue</h2>
+  <p>Every stringing order submitted from the kiosk appears in the Order Queue. The queue is sorted newest-first by default.</p>
+
+  <h3>Finding an order</h3>
+  <p>Scan the queue visually — each row shows the customer name and racket/string/tension at a glance. If the queue is long, look for the customer's name in the Name column. There's no search at this stage — scroll through the list.</p>
+
+  <h3>Expanding an order</h3>
+  <p>Click anywhere on a row (except the status badge) to expand it. The expanded view shows:</p>
+  <table>
+    <thead><tr><th>Field</th><th>What to use it for</th></tr></thead>
+    <tbody>
+      <tr><td>Racket brand &amp; model</td><td>Identify the frame — match with the physical racket before you start</td></tr>
+      <tr><td>String brand &amp; model</td><td>Pull the right string from stock</td></tr>
+      <tr><td>Tension (lbs)</td><td>Set your stringing machine to this value</td></tr>
+      <tr><td>Notes</td><td>Customer's special instructions — read before you start</td></tr>
+      <tr><td>Phone / Email</td><td>Contact the customer if there's a problem with the racket</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-warn">
+    <strong>Always read the Notes field</strong>
+    Customers use Notes for things like "frame cracked near grommet 3" or "use the lighter weight version of this string". These affect how — or whether — you proceed.
+  </div>
+
+  <h3>When something is wrong with the racket</h3>
+  <p>If you find a damaged grommet, a cracked frame, or anything that prevents stringing: contact the customer using the phone/email in the expanded row, then move the order back to <strong>Pending</strong> until resolved. Don't mark it Done.</p>
+</section>
+
+<section class="section" id="status-updates">
+  <h2><span class="dot"></span>Updating Status</h2>
+  <p>Tap the coloured status badge on any order row to cycle it forward:</p>
+  <table>
+    <thead><tr><th>From</th><th>Tap to</th><th>When</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-pending">Pending</span></td><td><span class="badge badge-inprogress">In Progress</span></td><td>When you pick up the racket and start stringing</td></tr>
+      <tr><td><span class="badge badge-inprogress">In Progress</span></td><td><span class="badge badge-done">Done</span></td><td>Immediately when you finish — this emails the customer</td></tr>
+      <tr><td><span class="badge badge-done">Done</span></td><td><span class="badge badge-pickedup">Picked Up</span></td><td>When the customer collects the racket in person</td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-tip">
+    <strong>Done sends an email</strong>
+    The moment you mark an order Done, an email goes to the customer automatically (if they provided an email address when registering). Mark it Done only when the racket is actually finished and waiting on the shelf.
+  </div>
+  <h3>Correcting a status</h3>
+  <p>If you advance a status by mistake — for example, marking Done when it isn't — the status cycles in one direction only. To reverse it, contact the shop owner who can update it directly via Supabase if needed. In practice, advance carefully: <strong>Done</strong> is the only status that sends an external notification.</p>
+</section>
+
+<section class="section" id="inquiries">
+  <h2><span class="dot"></span>Inquiries</h2>
+  <p>When a customer sends a product inquiry from the <code>/#/shop</code> page, it shows up in the Inquiries panel. A red badge on the dashboard tile tells you there are unread inquiries.</p>
+
+  <div class="step"><span class="step-num">1</span><div class="step-content"><h4>Open Inquiries from the dashboard</h4><p>Tap the Inquiries tile. The table shows all inquiries with their status: <span class="badge badge-new">New</span> inquiries are bold with a yellow left border — these need attention first.</p></div></div>
+  <div class="step"><span class="step-num">2</span><div class="step-content"><h4>Click to see the full inquiry</h4><p>Click any row to expand it. You'll see the customer's full item list with quantities and prices, their message to the shop, and their contact details (phone and/or email).</p></div></div>
+  <div class="step"><span class="step-num">3</span><div class="step-content"><h4>Contact the customer directly</h4><p>Use the phone number or email shown in the expanded row to reach out. The app doesn't send replies — you contact them yourself, outside the system.</p></div></div>
+  <div class="step"><span class="step-num">4</span><div class="step-content"><h4>Update the status</h4><p>Once you've replied: tap <strong>Mark Replied</strong>. If the inquiry is resolved or doesn't need a response: tap <strong>Mark Closed</strong>. The dashboard badge count drops.</p></div></div>
+
+  <div class="callout callout-tip">
+    <strong>New inquiry badge</strong>
+    The badge on the dashboard tile only counts <span class="badge badge-new">New</span> inquiries. Once you mark an inquiry Replied or Closed, it stops counting toward the badge — even if it's still in the table.
+  </div>
+</section>
+
+<section class="section" id="quick-ref">
+  <h2><span class="dot"></span>Quick Reference</h2>
+  <div class="ref-grid">
+    <div class="ref-card">
+      <h4>Order statuses</h4>
+      <ul>
+        <li><span class="badge badge-pending">Pending</span> <span>Not started yet</span></li>
+        <li><span class="badge badge-inprogress">In Progress</span> <span>Being strung now</span></li>
+        <li><span class="badge badge-done">Done</span> <span>Ready — emails customer</span></li>
+        <li><span class="badge badge-pickedup">Picked Up</span> <span>Customer collected it</span></li>
+      </ul>
+    </div>
+    <div class="ref-card">
+      <h4>Inquiry statuses</h4>
+      <ul>
+        <li><span class="badge badge-new">New</span> <span>Needs a response</span></li>
+        <li><span class="badge badge-replied">Replied</span> <span>You've contacted them</span></li>
+        <li><span class="badge badge-closed">Closed</span> <span>No further action</span></li>
+      </ul>
+    </div>
+    <div class="ref-card">
+      <h4>Key actions</h4>
+      <ul>
+        <li>Tap status badge <span>→ cycle status forward</span></li>
+        <li>Click row <span>→ expand details</span></li>
+        <li>Mark Replied <span>→ clears New badge</span></li>
+      </ul>
+    </div>
+    <div class="ref-card">
+      <h4>Who does what</h4>
+      <ul>
+        <li>Customer <span>→ submits kiosk order</span></li>
+        <li>Staff <span>→ updates queue</span></li>
+        <li>Owner <span>→ manages products &amp; settings</span></li>
+      </ul>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th>Situation</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>Racket is damaged, can't string it</td><td>Call the customer (number in order details), leave status as Pending</td></tr>
+      <tr><td>Customer doesn't know their tension</td><td>Pick it up from the kiosk — suggest 24–25 lbs as a safe default</td></tr>
+      <tr><td>String model is out of stock</td><td>Call the customer before starting, agree on a substitute</td></tr>
+      <tr><td>Accidentally marked Done too early</td><td>Note it — contact owner to revert via Supabase if needed</td></tr>
+      <tr><td>Customer comes in without an order ID</td><td>Find them by name in the queue — expand the row to confirm their racket details</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+</div>
+<script>
+const links=document.querySelectorAll('nav.sidebar a');
+const sections=document.querySelectorAll('.section');
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const a=document.querySelector('nav.sidebar a[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{threshold:0.3});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

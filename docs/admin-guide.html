@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Owner / Admin Guide — Badminton Pro Shop</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ground:#1A1F2E;--surface:#242938;--surface-2:#2E3548;
+  --text:#F0EDE6;--muted:#8B90A0;
+  --accent:#7EC8A4;--accent-dim:rgba(126,200,164,0.12);
+  --amber:#D4A843;--amber-dim:rgba(212,168,67,0.13);
+  --danger:#E07070;--danger-dim:rgba(224,112,112,0.1);--border:#2E3548;--sidebar:220px;--r:6px;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--ground);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+
+.page-header{
+  background:
+    repeating-linear-gradient(45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    repeating-linear-gradient(-45deg,transparent,transparent 11px,rgba(126,200,164,0.06) 11px,rgba(126,200,164,0.06) 12px),
+    var(--ground);
+  border-bottom:1px solid var(--border);padding:48px 48px 40px;
+}
+.doc-pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(126,200,164,.4);border-radius:100px;padding:3px 12px;margin-bottom:20px}
+.page-header h1{font-size:2.4rem;font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:12px}
+.page-header p{color:var(--muted);font-size:1rem;max-width:540px}
+
+.layout{display:flex;flex:1}
+nav.sidebar{width:var(--sidebar);flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--border);padding:28px 0;display:flex;flex-direction:column;gap:2px}
+nav.sidebar .nav-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 20px 4px;margin-top:4px}
+nav.sidebar a{display:block;padding:7px 20px;font-size:.875rem;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s}
+nav.sidebar a:hover,nav.sidebar a.active{color:var(--text);border-left-color:var(--accent);background:var(--accent-dim)}
+
+main{flex:1;padding:48px;max-width:780px}
+.section{margin-bottom:64px;scroll-margin-top:32px}
+.section h2{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.section h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.section h3{font-size:.9375rem;font-weight:700;margin:24px 0 10px;letter-spacing:-.01em}
+.section p{color:var(--muted);margin-bottom:12px;font-size:.9375rem;line-height:1.65}
+.section p strong{color:var(--text);font-weight:600}
+
+.step{display:flex;gap:18px;margin-bottom:20px;align-items:flex-start}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);border:1px solid rgba(126,200,164,.3);color:var(--accent);font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-content{flex:1}
+.step-content h4{font-size:.9375rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-content p{font-size:.875rem;color:var(--muted);margin-bottom:0;line-height:1.6}
+
+code{background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:'Courier New',monospace;font-size:.8rem;color:var(--accent)}
+
+.callout{border-radius:var(--r);padding:14px 18px;margin:16px 0;border-left:3px solid;font-size:.875rem;line-height:1.6}
+.callout-tip{background:var(--accent-dim);border-color:var(--accent);color:#B8E6D0}
+.callout-warn{background:var(--amber-dim);border-color:var(--amber);color:#E8D4A0}
+.callout-danger{background:var(--danger-dim);border-color:var(--danger);color:#F0B8B8}
+.callout strong{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;opacity:.7}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.875rem}
+th{text-align:left;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--border)}
+td{padding:11px 12px;border-bottom:1px solid var(--surface-2);color:var(--muted);vertical-align:top}
+td:first-child{color:var(--text);font-weight:500}
+tr:last-child td{border-bottom:none}
+
+.feature-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin:16px 0}
+.feature-block h4{font-size:.9375rem;font-weight:700;color:var(--text);margin-bottom:10px}
+.feature-block p{font-size:.875rem;color:var(--muted);margin:0;line-height:1.6}
+
+.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.05em;margin:0 2px}
+.badge-new{background:rgba(212,168,67,0.2);color:var(--amber)}
+.badge-replied{background:rgba(100,140,200,0.2);color:#648CC8}
+.badge-closed{background:var(--surface-2);color:var(--muted)}
+.badge-pending{background:rgba(212,168,67,0.15);color:var(--amber)}
+.badge-inprogress{background:rgba(100,140,200,0.15);color:#648CC8}
+.badge-done{background:var(--accent-dim);color:var(--accent)}
+.badge-pickedup{background:var(--surface-2);color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="page-header">
+  <span class="doc-pill">Owner &amp; Admin Guide</span>
+  <h1>Running the Shop</h1>
+  <p>How to use the staff panel — from logging in to managing your order queue, shop products, settings, and customer inquiries.</p>
+</header>
+
+<div class="layout">
+<nav class="sidebar" id="sidenav">
+  <span class="nav-label">Getting Started</span>
+  <a href="#logging-in">Logging in</a>
+  <a href="#dashboard">Dashboard overview</a>
+  <span class="nav-label">Daily Work</span>
+  <a href="#order-queue">Order queue</a>
+  <a href="#inquiries">Inquiries</a>
+  <span class="nav-label">Shop Management</span>
+  <a href="#shop-products">Shop products</a>
+  <a href="#shop-settings">Shop settings</a>
+  <a href="#inventory">String &amp; racket catalog</a>
+</nav>
+
+<main>
+
+<section class="section" id="logging-in">
+  <h2><span class="dot"></span>Logging In</h2>
+  <p>The staff panel is at <strong><code>/#/staff</code></strong> — add that to your phone's home screen for quick access from court.</p>
+  <div class="step"><span class="step-num">1</span><div class="step-content"><h4>Open the URL</h4><p>Navigate to the staff panel on any browser. You'll see a keypad — this is the PIN gate.</p></div></div>
+  <div class="step"><span class="step-num">2</span><div class="step-content"><h4>Enter the PIN</h4><p>Type your 4-digit staff PIN. For demo setups, the default PIN is <code>1234</code>. If you've changed it, use the value set in your environment configuration.</p></div></div>
+  <div class="step"><span class="step-num">3</span><div class="step-content"><h4>You're in</h4><p>The staff dashboard appears. This session stays unlocked until you tap Logout or close the browser.</p></div></div>
+  <div class="callout callout-tip">
+    <strong>Add to home screen</strong>
+    In Safari (iOS) or Chrome (Android), use "Add to Home Screen" to pin the staff panel as an app icon. It opens directly to the PIN gate — no URL to remember.
+  </div>
+</section>
+
+<section class="section" id="dashboard">
+  <h2><span class="dot"></span>Dashboard Overview</h2>
+  <p>After logging in, you see the staff dashboard — a tile grid with quick access to each section:</p>
+  <table>
+    <thead><tr><th>Tile</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td>Order Queue</td><td>All stringing orders — tap to manage status and view details</td></tr>
+      <tr><td>Inventory</td><td>Racket brands/models and string brands/models — the catalog for the kiosk</td></tr>
+      <tr><td>Shop Products</td><td>Products displayed on the public <code>/#/shop</code> page — photos, prices, sale tags</td></tr>
+      <tr><td>Settings</td><td>Shop name, tagline, contact info, about blurb, and accent colour</td></tr>
+      <tr><td>Inquiries</td><td>Customer inquiries from the shop page — shows a badge when new ones arrive</td></tr>
+    </tbody>
+  </table>
+  <p>If there are unread inquiries, a red badge appears on the Inquiries tile showing the count. It disappears once all inquiries are marked Replied or Closed.</p>
+</section>
+
+<section class="section" id="order-queue">
+  <h2><span class="dot"></span>Order Queue</h2>
+  <p>The order queue is the primary view for managing stringing jobs. Orders appear immediately after a customer submits from the kiosk.</p>
+  <h3>Reading the queue</h3>
+  <p>Each row shows: date received, customer name, racket, string + tension, and the current status badge. Rows are sorted newest-first.</p>
+  <h3>Status cycle</h3>
+  <p>Tap any status badge to advance to the next stage:</p>
+  <table>
+    <thead><tr><th>Status</th><th>Meaning</th><th>Triggers email?</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-pending">Pending</span></td><td>Order received, not started yet</td><td>—</td></tr>
+      <tr><td><span class="badge badge-inprogress">In Progress</span></td><td>Currently being strung</td><td>—</td></tr>
+      <tr><td><span class="badge badge-done">Done</span></td><td>Restringing complete, ready for pickup</td><td>Yes — emails customer if they provided address</td></tr>
+      <tr><td><span class="badge badge-pickedup">Picked Up</span></td><td>Customer has collected the racket</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <h3>Expanding an order</h3>
+  <p>Click anywhere on a row (except the status badge) to expand it. The expanded view shows the full racket and string details, tension, customer name, phone, email, notes, and the submission timestamp.</p>
+  <div class="callout callout-tip">
+    <strong>Managing from your phone</strong>
+    The queue works on any screen size. If you're on court and a customer calls about their racket — open the staff URL on your phone, find the order by name, and update the status right there.
+  </div>
+</section>
+
+<section class="section" id="inquiries">
+  <h2><span class="dot"></span>Inquiries</h2>
+  <p>When a customer sends an inquiry from the <code>/#/shop</code> page, it appears in the Inquiries panel. The dashboard tile shows a badge with the count of unread inquiries.</p>
+  <h3>Inquiry table</h3>
+  <p>Each row shows: date, customer name, contact (phone or email), number of items in the inquiry, and the status badge:</p>
+  <table>
+    <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge badge-new">New</span></td><td>Unread — needs a response. Row is bold with a yellow left border.</td></tr>
+      <tr><td><span class="badge badge-replied">Replied</span></td><td>You've contacted the customer</td></tr>
+      <tr><td><span class="badge badge-closed">Closed</span></td><td>No further action needed</td></tr>
+    </tbody>
+  </table>
+  <h3>Handling an inquiry</h3>
+  <div class="step"><span class="step-num">1</span><div class="step-content"><h4>Click to expand</h4><p>Tap any row to see the full inquiry — item list with quantities and prices, the customer's message, and their full contact details.</p></div></div>
+  <div class="step"><span class="step-num">2</span><div class="step-content"><h4>Reply to the customer</h4><p>Use the phone number or email shown in the expanded row to contact the customer directly — outside the app. There's no built-in reply function.</p></div></div>
+  <div class="step"><span class="step-num">3</span><div class="step-content"><h4>Update the status</h4><p>Tap <strong>Mark Replied</strong> after you've contacted them, or <strong>Mark Closed</strong> if no further action is needed. The badge count on the dashboard tile decreases.</p></div></div>
+</section>
+
+<section class="section" id="shop-products">
+  <h2><span class="dot"></span>Shop Products</h2>
+  <p>Shop products are the items shown on the public <code>/#/shop</code> page. You manage them from the Inventory section of the staff panel.</p>
+
+  <h3>Adding a product</h3>
+  <div class="step"><span class="step-num">1</span><div class="step-content"><h4>Open Inventory → Shop Products tab</h4><p>From the dashboard, tap Inventory, then select the Shop Products tab at the top.</p></div></div>
+  <div class="step"><span class="step-num">2</span><div class="step-content"><h4>Fill in the product details</h4><p>Name, category (Racket / String / Grip / Shuttle / Bag / Shoe), price, and stock quantity. Optional: sale price and sale end date.</p></div></div>
+  <div class="step"><span class="step-num">3</span><div class="step-content"><h4>Upload a photo</h4><p>Click the image area to upload a product photo (JPG, PNG, or WebP — max 5MB). Or paste an image URL directly. Photos appear in the product grid on the shop page.</p></div></div>
+  <div class="step"><span class="step-num">4</span><div class="step-content"><h4>Or scan a barcode</h4><p>Tap the barcode icon to use your camera to scan a product's UPC barcode. The app looks up the product name and image automatically. Useful for adding common items quickly.</p></div></div>
+  <div class="step"><span class="step-num">5</span><div class="step-content"><h4>Set visibility</h4><p>The visible toggle controls whether the product appears on the public shop page. Turn it off to hide a product without deleting it — useful for out-of-season items or items you're not ready to list yet.</p></div></div>
+
+  <h3>Bulk import via CSV</h3>
+  <p>To add many products at once, use the Import CSV button. Download the template first to see the required column format, fill it in, and upload. The import skips rows with missing required fields and shows a summary of what was imported vs skipped.</p>
+
+  <h3>Sale pricing</h3>
+  <p>On any product's edit form, set a <strong>Sale Price</strong> and a <strong>Sale Ends At</strong> date. The sale badge and crossed-out original price appear automatically on the shop page while the sale is active. After the end date, the product reverts to its standard price.</p>
+</section>
+
+<section class="section" id="shop-settings">
+  <h2><span class="dot"></span>Shop Settings</h2>
+  <p>Settings control what appears in the header of your public shop page — your shop's identity and contact details.</p>
+  <table>
+    <thead><tr><th>Field</th><th>Where it appears</th></tr></thead>
+    <tbody>
+      <tr><td>Shop name</td><td>Browser title and shop page header</td></tr>
+      <tr><td>Tagline</td><td>Subtitle in the shop page header</td></tr>
+      <tr><td>Phone</td><td>Shop page header contact area</td></tr>
+      <tr><td>Email</td><td>Shop page header contact area</td></tr>
+      <tr><td>About blurb</td><td>Short description in the shop page header</td></tr>
+      <tr><td>Accent colour</td><td>Button and badge colours on the public shop page</td></tr>
+    </tbody>
+  </table>
+  <p>Tap <strong>Save Settings</strong> after making changes. Updates are live immediately on the public shop page — no rebuild or redeploy needed.</p>
+  <div class="callout callout-tip">
+    <strong>Accent colour</strong>
+    Five presets are available. The colour flows through to the shop page's primary buttons and status badges — pick one that matches your shop's visual identity.
+  </div>
+</section>
+
+<section class="section" id="inventory">
+  <h2><span class="dot"></span>String &amp; Racket Catalog</h2>
+  <p>The kiosk stringing form uses this catalog for its dropdowns — racket brands, racket models, string brands, and string models. If a customer's racket or preferred string isn't listed, it won't appear in the kiosk form.</p>
+  <h3>The four tabs</h3>
+  <table>
+    <thead><tr><th>Tab</th><th>What it manages</th></tr></thead>
+    <tbody>
+      <tr><td>Racket Brands</td><td>Top-level brands (Yonex, Victor, Li-Ning, etc.)</td></tr>
+      <tr><td>Racket Models</td><td>Specific models per brand (Astrox 99, Nanoflare 1000, etc.) with stock qty and price</td></tr>
+      <tr><td>String Brands</td><td>String manufacturers (Yonex, Victor, Ashaway, etc.)</td></tr>
+      <tr><td>String Models</td><td>Specific strings with recommended tension range (min/max lbs), stock qty, and price</td></tr>
+    </tbody>
+  </table>
+  <h3>Adding an item</h3>
+  <p>Each tab has an "Add" form at the bottom. Fill in the required fields and save. The new item appears in the kiosk dropdowns immediately — no restart required.</p>
+  <h3>Editing and deleting</h3>
+  <p>Each row has edit and delete buttons. Editing a string model lets you update the tension range — the kiosk enforces these limits when customers enter tension. Deleting a brand removes all its models too.</p>
+  <div class="callout callout-warn">
+    <strong>Deleting is permanent</strong>
+    Deleted brands and models are gone from the system. Existing orders that referenced them still show the brand and model name (stored as text) — so historical orders are unaffected.
+  </div>
+</section>
+
+</main>
+</div>
+<script>
+const links=document.querySelectorAll('nav.sidebar a');
+const sections=document.querySelectorAll('.section');
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));const a=document.querySelector('nav.sidebar a[href="#'+e.target.id+'"]');if(a)a.classList.add('active')}})},{threshold:0.3});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

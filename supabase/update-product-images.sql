@@ -1,4 +1,13 @@
 -- Run this once in Supabase SQL editor to add product images to existing rows
+update shop_products set image_url = 'https://tadssportinggoods.ca/cdn/shop/products/2016122116192862243_1024x1024.jpg?v=1495417421'
+  where name = 'Victor Thruster K 9900';
+update shop_products set image_url = 'https://www.directbadminton.co.uk/images/extralarge/Car_113863.jpg'
+  where name = 'Carlton Kinesis Ultra Tour';
+update shop_products
+  set name = 'Victor Multi Thermo 9032 Bag',
+      description = '9-racket thermo bag with thermal compartment and shoe pocket.',
+      image_url = 'https://www.badmintonwarehouse.com/cdn/shop/products/VICTOR-MULTI-THERMO-BADMNTN-BG-2_700x700.jpg?v=1528921760'
+  where name = 'Victor Magan 9 Badminton Bag';
 update shop_products set image_url = 'https://www.badmintonwarehouse.com/cdn/shop/files/astrox_99Pro_1_467x700.webp?v=1756567157'
   where name = 'Yonex Astrox 99 Pro';
 update shop_products set image_url = 'https://www.badmintonwarehouse.com/cdn/shop/files/NF1000Z_Lightning_Yellow_1_588x700.webp?v=1781215165'

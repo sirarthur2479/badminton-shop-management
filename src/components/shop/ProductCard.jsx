@@ -41,10 +41,12 @@ export default function ProductCard({ product, enquireHref }) {
             className="block w-full text-center text-sm py-2 px-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors mb-2">
             Add to Inquiry
           </button>
-          <a href={enquireHref} target="_blank" rel="noreferrer"
-            className="block w-full text-center text-sm py-2 px-3 rounded-lg border border-green-600 text-green-700 hover:bg-green-50 font-medium transition-colors">
-            Enquire
-          </a>
+          {enquireHref && (
+            <a href={enquireHref} target="_blank" rel="noreferrer"
+              className="block w-full text-center text-sm py-2 px-3 rounded-lg border border-green-600 text-green-700 hover:bg-green-50 font-medium transition-colors">
+              Enquire
+            </a>
+          )}
         </div>
       </CardContent>
     </Card>

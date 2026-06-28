@@ -29,7 +29,7 @@ function filterProducts(products, category, search) {
 function getEnquireHref(settings) {
   if (settings?.phone) return `https://wa.me/${settings.phone}`
   if (settings?.email) return `mailto:${settings.email}`
-  return '#'
+  return null
 }
 
 function ShopPageInner() {

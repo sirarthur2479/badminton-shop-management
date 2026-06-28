@@ -108,22 +108,22 @@ select 'Badminton Pro Shop', 'Your local badminton specialist', 'green'
 where not exists (select 1 from shop_settings);
 
 -- ── Shop products seed ────────────────────────────────────────────────────────
-insert into shop_products (name, category, price, sale_price, description, visible) values
-  ('Yonex Astrox 99 Pro',         'racket',  349.00,   null, 'High-flex shaft for all-round smash play. Yonex top-tier.',         true),
-  ('Yonex Nanoflare 1000Z',       'racket',  379.00,   null, 'Ultra-fast head-light frame for elite net play.',                   true),
-  ('Victor Thruster K 9900',      'racket',  349.00, 299.00, 'Stiff carbon frame with extra reinforcement for full-power hitters.', true),
-  ('Li-Ning Axforce 100',         'racket',  319.00, 279.00, 'Carbon frame designed for high tension and aggressive attack.',     true),
-  ('Carlton Kinesis Ultra Tour',  'racket',  219.00,   null, 'Lightweight all-round racket perfect for club and social play.',    true),
-  ('Yonex BG80',                  'string',   22.00,   null, 'High repulsion string. Favoured by shuttle control players.',       true),
-  ('Yonex Aerobite',              'string',   28.00,   null, 'Hybrid string set for spin and control. Bi-component design.',      true),
-  ('Victor VBS-70',               'string',   20.00,   null, 'All-round performance string with durable coating.',                true),
-  ('Victor Magan 9 Badminton Bag','bag',      149.00,  null, '9-racket bag with thermal compartment and shoe pocket.',            true),
-  ('Yonex Pro Backpack BA92012',  'bag',       99.00,  null, 'Compact 2-racket backpack, padded laptop sleeve.',                  true),
-  ('Yonex AC102 Overgrip 3-pack', 'grip',      12.00,  null, 'Tacky finish grip for better control in humid conditions.',         true),
-  ('Victor Comfortable Grip',     'grip',       8.00,  null, 'Absorbent grip tape suitable for all racket types.',                true),
-  ('Yonex Mavis 350 6-pack',      'shuttle',   32.00,  null, 'Nylon shuttlecock, medium speed. Ideal for recreational play.',     true),
-  ('Yonex SHB65Z Shoes',          'shoe',     189.00, 159.00,'Lightweight court shoe with non-marking carbon-fibre outsole.',     true),
-  ('Victor SH-A960 Shoes',        'shoe',     159.00,  null, 'Durable badminton shoe with reinforced toe cap.',                   true);
+insert into shop_products (name, category, price, sale_price, description, image_url, visible) values
+  ('Yonex Astrox 99 Pro',         'racket',  349.00,   null, 'High-flex shaft for all-round smash play. Yonex top-tier.',           'https://www.badmintonwarehouse.com/cdn/shop/files/astrox_99Pro_1_467x700.webp?v=1756567157',                                                                       true),
+  ('Yonex Nanoflare 1000Z',       'racket',  379.00,   null, 'Ultra-fast head-light frame for elite net play.',                     'https://www.badmintonwarehouse.com/cdn/shop/files/NF1000Z_Lightning_Yellow_1_588x700.webp?v=1781215165',                                                         true),
+  ('Victor Thruster K 9900',      'racket',  349.00, 299.00, 'Stiff carbon frame with extra reinforcement for full-power hitters.',  null,                                                                                                                                                          true),
+  ('Li-Ning Axforce 100',         'racket',  319.00, 279.00, 'Carbon frame designed for high tension and aggressive attack.',        'https://cdn.shopify.com/s/files/1/0650/6079/8701/files/Axforce100A_1.webp?v=1685970219',                                                                      true),
+  ('Carlton Kinesis Ultra Tour',  'racket',  219.00,   null, 'Lightweight all-round racket perfect for club and social play.',       null,                                                                                                                                                          true),
+  ('Yonex BG80',                  'string',   22.00,   null, 'High repulsion string. Favoured by shuttle control players.',          'https://www.badmintonwarehouse.com/cdn/shop/files/BG80_White_467x700.webp?v=1746555992',                                                                       true),
+  ('Yonex Aerobite',              'string',   28.00,   null, 'Hybrid string set for spin and control. Bi-component design.',         'https://www.badmintonwarehouse.com/cdn/shop/products/Yonex-Aerobit-string_1024x.jpg?v=1536899676',                                                            true),
+  ('Victor VBS-70',               'string',   20.00,   null, 'All-round performance string with durable coating.',                   'https://e78.us/cdn/shop/products/900_662_191_9_victor_vbs_70_1_498x.png?v=1588941241',                                                                         true),
+  ('Victor Magan 9 Badminton Bag','bag',      149.00,  null, '9-racket bag with thermal compartment and shoe pocket.',               null,                                                                                                                                                          true),
+  ('Yonex Pro Backpack BA92012',  'bag',       99.00,  null, 'Compact 2-racket backpack, padded laptop sleeve.',                     'https://www.badmintonwarehouse.com/cdn/shop/files/int_ba92412b_194-1_1_1_700x700.webp?v=1760379049',                                                          true),
+  ('Yonex AC102 Overgrip 3-pack', 'grip',      12.00,  null, 'Tacky finish grip for better control in humid conditions.',            'https://www.yonex.com/media/catalog/product/i/n/int_ac102-3_011-5.png?quality=80&bg-color=248,248,248,0.75&fit=bounds&height=819&width=600&canvas=600:819',   true),
+  ('Victor Comfortable Grip',     'grip',       8.00,  null, 'Absorbent grip tape suitable for all racket types.',                   'https://www.badmintonwarehouse.com/cdn/shop/files/victor_soft_grip_all_colors_718x700.png?v=1770042306',                                                      true),
+  ('Yonex Mavis 350 6-pack',      'shuttle',   32.00,  null, 'Nylon shuttlecock, medium speed. Ideal for recreational play.',        'https://www.badmintonwarehouse.com/cdn/shop/products/yonex-mavis-350-nylon-shuttlecocks-white-medium-speed-1_700x700.jpg?v=1579725905',                       true),
+  ('Yonex SHB65Z Shoes',          'shoe',     189.00, 159.00,'Lightweight court shoe with non-marking carbon-fibre outsole.',        'https://www.badmintonwarehouse.com/cdn/shop/products/Yonex_65Z_Mens_BlackRed_-_1_1139x700.jpg?v=1579725959',                                                  true),
+  ('Victor SH-A960 Shoes',        'shoe',     159.00,  null, 'Durable badminton shoe with reinforced toe cap.',                      'https://oregonbadminton.com/cdn/shop/products/Victor960CQ3_1024x1024@2x.jpg?v=1546200402',                                                                    true);
 
 
 -- Seed data: common brands

@@ -1,12 +1,14 @@
 import { useInquiry } from '../../contexts/InquiryContext'
 
 const ACCENT_MAP = {
-  green:  { header: 'bg-green-600', cta: 'text-green-700 hover:bg-green-50', sub: 'text-green-100' },
-  navy:   { header: 'bg-blue-900',  cta: 'text-blue-900 hover:bg-blue-50',   sub: 'text-blue-200' },
-  orange: { header: 'bg-orange-500', cta: 'text-orange-700 hover:bg-orange-50', sub: 'text-orange-100' },
-  purple: { header: 'bg-purple-600', cta: 'text-purple-700 hover:bg-purple-50', sub: 'text-purple-100' },
-  red:    { header: 'bg-red-600',   cta: 'text-red-700 hover:bg-red-50',     sub: 'text-red-100' },
+  green:  { overlay: 'bg-green-900/60', cta: 'text-green-700 hover:bg-green-50', sub: 'text-green-100' },
+  navy:   { overlay: 'bg-blue-900/70',  cta: 'text-blue-900 hover:bg-blue-50',   sub: 'text-blue-200' },
+  orange: { overlay: 'bg-orange-900/60', cta: 'text-orange-700 hover:bg-orange-50', sub: 'text-orange-100' },
+  purple: { overlay: 'bg-purple-900/65', cta: 'text-purple-700 hover:bg-purple-50', sub: 'text-purple-100' },
+  red:    { overlay: 'bg-red-900/65',   cta: 'text-red-700 hover:bg-red-50',     sub: 'text-red-100' },
 }
+
+const BANNER_URL = 'https://images.unsplash.com/photo-1599391398131-cd12dfc6c24e?fm=jpg&q=80&w=2000&auto=format&fit=crop'
 
 export default function ShopHeader({ settings, onOpenInquiry }) {
   const { items } = useInquiry()
@@ -19,11 +21,18 @@ export default function ShopHeader({ settings, onOpenInquiry }) {
   const accent = ACCENT_MAP[settings?.accent_colour] ?? ACCENT_MAP.green
 
   return (
-    <header className={`${accent.header} text-white`}>
-      <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <header className="relative text-white overflow-hidden">
+      <img
+        src={BANNER_URL}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
+      <div className={`absolute inset-0 ${accent.overlay}`} />
+      <div className="relative max-w-7xl mx-auto px-4 py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">{name}</h1>
-          <p className={`${accent.sub} text-sm mt-1`}>{tagline}</p>
+          <h1 className="text-3xl font-bold drop-shadow">{name}</h1>
+          <p className={`${accent.sub} text-sm mt-1 drop-shadow`}>{tagline}</p>
         </div>
         <div className="flex items-center gap-3">
           {ctaHref && (

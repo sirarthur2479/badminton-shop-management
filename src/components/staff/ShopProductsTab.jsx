@@ -80,13 +80,16 @@ export default function ShopProductsTab() {
     setSaving(false)
   }
 
-  async function handleAdd() {
+  async function handleAdd(andAnother = false) {
     setSaving(true)
     const { error: err } = await supabase
       .from('shop_products')
       .insert([coerceSaleFields({ ...addDraft, price: Number(addDraft.price) || null })])
-    if (!err) { setAdding(false); setAddDraft(emptyProduct()); setScannerOpen(false); load() }
-    else setError(err.message)
+    if (!err) {
+      load()
+      if (andAnother) { setAddDraft(emptyProduct()) }
+      else { setAdding(false); setAddDraft(emptyProduct()) }
+    } else setError(err.message)
     setSaving(false)
   }
 
@@ -172,9 +175,12 @@ export default function ShopProductsTab() {
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 flex flex-col gap-3">
           <h3 className="font-semibold text-blue-900">New Product</h3>
           <ProductFields values={addDraft} onChange={setAddDraft} onUploading={setImageUploading} />
-          <div className="flex gap-3">
-            <Button variant="primary" onClick={handleAdd} disabled={saving || imageUploading || !addDraft.name} className="py-2 px-5 text-base">
+          <div className="flex flex-wrap gap-3">
+            <Button variant="primary" onClick={() => handleAdd(false)} disabled={saving || imageUploading || !addDraft.name} className="py-2 px-5 text-base">
               {saving ? 'Saving...' : 'Save'}
+            </Button>
+            <Button variant="secondary" onClick={() => handleAdd(true)} disabled={saving || imageUploading || !addDraft.name} className="py-2 px-5 text-base">
+              Save & Add Another
             </Button>
             <Button variant="secondary" onClick={() => setAdding(false)} className="py-2 px-5 text-base">
               Cancel

@@ -3,9 +3,20 @@ import { Card, CardContent } from '../ui/card'
 import { isSaleActive } from '../../lib/saleUtils'
 import { useInquiry } from '../../contexts/InquiryContext'
 
-export default function ProductCard({ product, enquireHref }) {
+function buildEnquireHref(contact, product) {
+  if (!contact) return null
+  const price = isSaleActive(product) ? product.sale_price : product.price
+  const priceStr = price ? ` — NZD $${Number(price).toFixed(2)}` : ''
+  const msg = `Hi, I'm interested in the ${product.name}${priceStr}. Could you let me know if it's available?`
+  if (contact.type === 'whatsapp') return `https://wa.me/${contact.value}?text=${encodeURIComponent(msg)}`
+  if (contact.type === 'email') return `mailto:${contact.value}?subject=${encodeURIComponent(`Enquiry: ${product.name}`)}&body=${encodeURIComponent(msg)}`
+  return null
+}
+
+export default function ProductCard({ product, contact }) {
   const { addItem } = useInquiry()
   const onSale = isSaleActive(product)
+  const enquireHref = buildEnquireHref(contact, product)
 
   return (
     <Card className="overflow-hidden flex flex-col">

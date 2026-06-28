@@ -26,9 +26,9 @@ function filterProducts(products, category, search) {
   })
 }
 
-function getEnquireHref(settings) {
-  if (settings?.phone) return `https://wa.me/${settings.phone}`
-  if (settings?.email) return `mailto:${settings.email}`
+function getContact(settings) {
+  if (settings?.phone) return { type: 'whatsapp', value: settings.phone }
+  if (settings?.email) return { type: 'email', value: settings.email }
   return null
 }
 
@@ -60,7 +60,7 @@ function ShopPageInner() {
             className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 sm:ml-auto"
           />
         </div>
-        <ProductGrid products={visible} isLoading={isLoading} enquireHref={getEnquireHref(settings)} />
+        <ProductGrid products={visible} isLoading={isLoading} contact={getContact(settings)} />
       </main>
       <InquirySheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
     </div>
